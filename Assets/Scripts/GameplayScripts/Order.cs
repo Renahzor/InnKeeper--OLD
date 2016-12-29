@@ -3,12 +3,8 @@ using System.Collections;
 
 public class Order {
 
-    public string orderItemName;
-    public string orderDescription;
-    public int orderLevel;
-    public int quantity;
-    public int paymentValue;
-    public int itemIndex;
+    public string orderItemName, orderDescription;
+    public int orderLevel, quantity, paymentValue, itemIndex;
 
     public Order()
     {

@@ -1,10 +1,7 @@
 ﻿//Holds info for current quests for heroes
 public class Quest{
 
-    public int locationIndex;
-    public int objectiveIndex;
-    public int objectiveQuantity;
-    public int goldReward;
+    public int locationIndex, objectiveIndex, objectiveQuantity, goldReward;
 
     public int timesCompleted;
 

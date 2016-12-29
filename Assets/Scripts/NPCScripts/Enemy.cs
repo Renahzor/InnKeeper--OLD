@@ -2,18 +2,10 @@
 
 public class Enemy{
 
-    //public enum EnemyType { Animal, Humanoid, Dragon };
-
-    //EnemyType type;
     public string name;
-    int HP;
-    int attackMin;
-    int attackMax;
-    float attackTimer;
-    float attackSwingReset;
-    int attackBonusChance;
-    public int level;
-    public int armor;
+    int HP, attackMin, attackMax, attackBonusChance;
+    public int level, armor;
+    float attackTimer, attackSwingReset;
 
     public Enemy(string _name, int _hpMax, int _level)
     {

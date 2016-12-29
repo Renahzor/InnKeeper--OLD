@@ -13,18 +13,9 @@ public class Adventurer : MonoBehaviour {
     Profession profession;
     Race race;
 
-    public int level;
-    int strength;
-    int agility;
-    int toughness;
-    int smarts;
-    int minDamage;
-    int maxDamage;
-    int exp;
+    public int level, HP, maxHP;
+    int strength, agility, toughness, smarts, minDamage, maxDamage, exp, gold;
 
-    public int HP;
-    public int maxHP;
-    int gold;
     public string advName;
 
     float attackTimer = 1.0f;
@@ -35,18 +26,15 @@ public class Adventurer : MonoBehaviour {
 
     Quest currentQuest = null;
 
-    float questRecheck = 15.0f;
+    float stateCheckCooldown = 5.0f;
 
     //state tracking
-    bool atBed = false;
-    bool atTable = false;
-    bool atQuest = false;
-    bool wantsQuest = false;
-
-    bool hasActivity = false;
+    bool atBed, atTable, atQuest, wantsQuest, hasActivity = false;
 
     //Store health bar so we dont have to "find" it multiple times
     public Image healthBar = null;
+
+    StateTracker myState;
 
     //creates a new random adventurer
     void Awake()
@@ -73,13 +61,20 @@ public class Adventurer : MonoBehaviour {
         gold = 2;
         advName = "Random Dude";
         UpdateStatList();
+        myState = new StateTracker();
     }
 
     void Update()
     {
-        questRecheck -= Time.deltaTime;
+        stateCheckCooldown -= Time.deltaTime;
 
-        if (wantsQuest && questRecheck <= 0.0 && !hasActivity)
+        if (stateCheckCooldown <= 0.0f)
+        {
+            myState.UpdateState(GetComponent<AdventurerNeeds>());
+            stateCheckCooldown = 5.0f;
+        }
+
+        if (myState.GetCurrentState() == StateTracker.States.WantsQuest && !hasActivity)
         {
             List<Quest> desireableQuests = new List<Quest>();
 
@@ -96,25 +91,15 @@ public class Adventurer : MonoBehaviour {
             if (desireableQuests.Count > 0)
             {
                 currentQuest = desireableQuests[UnityEngine.Random.Range(0, desireableQuests.Count)];
-                StartCoroutine(RunQuest(currentQuest));
-                wantsQuest = false;
+                hasActivity = true;
+                StartCoroutine(MoveToQuest(currentQuest));
             }
         }
 
-        else if (questRecheck <= 0.0 && currentQuest == null)
+        else if (HP < maxHP * 0.8 && !hasActivity)
         {
-            questRecheck = 15.0f;
-        }
-
-        if (HP < maxHP * 0.8 && !hasActivity)
-        {
-            wantsQuest = false;
+            hasActivity = true;
             StartCoroutine(MoveToBed());
-        }
-
-        else if (!hasActivity)
-        {
-            StartCoroutine(MoveToQuest());
         }
     }
 
@@ -216,6 +201,8 @@ public class Adventurer : MonoBehaviour {
 
             yield return null;
         }
+
+        myState.ResetState();
     }
 
     public bool Attack(Enemy target)
@@ -265,7 +252,6 @@ public class Adventurer : MonoBehaviour {
 
     IEnumerator MoveToBed()
     {
-        hasActivity = true;
         GameObject temp = GameObject.Find("Bed");
 
         while (!atBed)
@@ -295,18 +281,15 @@ public class Adventurer : MonoBehaviour {
         hasActivity = false;
     }
 
-    IEnumerator MoveToQuest()
+    IEnumerator MoveToQuest(Quest q)
     {
-        hasActivity = true;
-
         GameObject temp = GameObject.Find("PlayerTest");
         while (!atQuest)
         {
             this.GetComponent<Movement>().MoveTowardTarget(temp.transform);
             yield return null;
         }
-        hasActivity = false;
-        wantsQuest = true;       
+        StartCoroutine(RunQuest(q));
     }
 
     public void ChangeHeroHealthDisplay()
