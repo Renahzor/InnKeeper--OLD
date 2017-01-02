@@ -35,6 +35,7 @@ public class Adventurer : MonoBehaviour {
     public Image healthBar = null;
 
     StateTracker myState;
+    NPCBehaviors behaviors;
 
     //creates a new random adventurer
     void Awake()
@@ -62,6 +63,7 @@ public class Adventurer : MonoBehaviour {
         advName = "Random Dude";
         UpdateStatList();
         myState = new StateTracker();
+        behaviors = GetComponent<NPCBehaviors>();
     }
 
     void Update()
