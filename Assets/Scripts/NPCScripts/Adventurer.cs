@@ -74,32 +74,26 @@ public class Adventurer : MonoBehaviour {
             stateCheckCooldown = 5.0f;
         }
 
-        if (myState.GetCurrentState() == StateTracker.States.WantsQuest && !hasActivity)
-        {
-            List<Quest> desireableQuests = new List<Quest>();
-
-            ActiveQuestManager aqm = GameObject.Find("GameMaster").GetComponent<ActiveQuestManager>();
-
-            foreach (Quest q in aqm.activeQuests.Keys)
-            {
-                if (q.locationIndex + q.locationIndex <= level && q.goldReward >= level)
-                {
-                    desireableQuests.Add(q);
-                }
-            }
-
-            if (desireableQuests.Count > 0)
-            {
-                currentQuest = desireableQuests[UnityEngine.Random.Range(0, desireableQuests.Count)];
-                hasActivity = true;
-                StartCoroutine(MoveToQuest(currentQuest));
-            }
-        }
-
-        else if (HP < maxHP * 0.8 && !hasActivity)
+        //check for health fist
+        if (HP < maxHP * 0.8 && !hasActivity)
         {
             hasActivity = true;
             StartCoroutine(MoveToBed());
+        }
+
+        //if no activity, find an activity that interests the npc
+        if (!hasActivity)
+        {
+            switch(myState.GetCurrentState())
+            {
+                case StateTracker.States.WantsQuest:
+                    GetQuest();
+                    break;                   
+                case StateTracker.States.WantsFood:
+                    StartCoroutine(MoveToTable());
+                    break;
+                default: break;   
+            }
         }
     }
 
@@ -137,6 +131,30 @@ public class Adventurer : MonoBehaviour {
         statsList.Add("Gold: " + gold);
     }
 
+    public void GetQuest()
+    {
+        List<Quest> desireableQuests = new List<Quest>();
+
+        ActiveQuestManager aqm = GameObject.Find("GameMaster").GetComponent<ActiveQuestManager>();
+
+        foreach (Quest q in aqm.activeQuests.Keys)
+        {
+            if (q.locationIndex + q.locationIndex <= level && q.goldReward >= level)
+            {
+                desireableQuests.Add(q);
+            }
+        }
+
+        if (desireableQuests.Count > 0)
+        {
+            currentQuest = desireableQuests[UnityEngine.Random.Range(0, desireableQuests.Count)];
+            hasActivity = true;
+            StartCoroutine(MoveToQuest(currentQuest));
+        }
+
+        return;
+    }
+
     IEnumerator RunQuest(Quest q)
     {
         hasActivity = true;
@@ -163,18 +181,14 @@ public class Adventurer : MonoBehaviour {
         while (currentQuest != null)
         {
             activityTime += Time.deltaTime;
-
             int tmpHP = HP;
+
             foreach (Enemy e in enemies)
-            {
                 HP -= e.Attack(10 + agility + toughness);
-            }
-
+                        
             if (tmpHP != HP)
-            {
                 ChangeHeroHealthDisplay();
-            }
-
+            
             if (myTarget == null)
             {
                 myTarget = enemies[UnityEngine.Random.Range(0, enemies.Count)];
@@ -196,12 +210,9 @@ public class Adventurer : MonoBehaviour {
             {
                 Flee(q, enemiesDefeated, enemies);
             }
-
             ActiveHeroPanel.Instance.UpdateHeroStats(this);
-
             yield return null;
         }
-
         myState.ResetState();
     }
 
@@ -225,8 +236,7 @@ public class Adventurer : MonoBehaviour {
     public void CompleteQuest(Quest q, int numberDefeated)
     {
         Player p = GameObject.Find("PlayerTest").GetComponent<Player>();
-
-        InventoryMaster.Instance.AddItem(0, numberDefeated);
+        InventoryMaster.Instance.AddItem(q.objectiveIndex, numberDefeated);
         
         p.playerGold -= q.goldReward;
         gold += q.goldReward;
@@ -290,6 +300,19 @@ public class Adventurer : MonoBehaviour {
             yield return null;
         }
         StartCoroutine(RunQuest(q));
+    }
+
+    IEnumerator MoveToTable()
+    {
+        hasActivity = true;
+        GameObject temp = GameObject.Find("Table");
+        while (!atTable)
+        {
+            this.GetComponent<Movement>().MoveTowardTarget(temp.transform);
+            yield return null;
+        }
+
+        hasActivity = false;
     }
 
     public void ChangeHeroHealthDisplay()

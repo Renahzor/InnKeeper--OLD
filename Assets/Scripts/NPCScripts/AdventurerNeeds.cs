@@ -7,10 +7,10 @@ public class AdventurerNeeds : MonoBehaviour {
 	
     void Start()
     {
-        foodNeed = 100;
-        drinkNeed = 100;
-        questNeed = 100;
-        socialNeed = 100;
+        foodNeed = Random.Range(70, 100);
+        drinkNeed = Random.Range(70, 100);
+        questNeed = Random.Range(70, 100);
+        socialNeed = Random.Range(70, 100);
     }
 
 	// Update is called once per frame
