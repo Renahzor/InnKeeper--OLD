@@ -14,11 +14,11 @@
         state = States.Idle;
 
         float tmp = 85.0f;
-        if (needs.socialNeed < tmp)
+        /*if (needs.socialNeed < tmp)
         {
             state = States.WantsSocial;
             tmp = needs.socialNeed;
-        }
+        }*/
 
         if (needs.questNeed < tmp)
         {
@@ -26,11 +26,11 @@
             tmp = needs.questNeed;
         }
 
-        if (needs.drinkNeed < tmp)
+        /*if (needs.drinkNeed < tmp)
         {
             state = States.WantsDrink;
             tmp = needs.drinkNeed;
-        }
+        }*/
 
         if (needs.foodNeed <= tmp)
         {

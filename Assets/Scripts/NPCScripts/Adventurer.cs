@@ -36,6 +36,7 @@ public class Adventurer : MonoBehaviour {
 
     StateTracker myState;
     NPCBehaviors behaviors;
+    AdventurerNeeds myNeeds;
 
     //creates a new random adventurer
     void Awake()
@@ -64,6 +65,7 @@ public class Adventurer : MonoBehaviour {
         UpdateStatList();
         myState = new StateTracker();
         behaviors = GetComponent<NPCBehaviors>();
+        myNeeds = GetComponent<AdventurerNeeds>();
     }
 
     void Update()
@@ -177,6 +179,8 @@ public class Adventurer : MonoBehaviour {
             yield return null;
         }
 
+        myNeeds.SetNeedRates(-0.5f, -0.5f, 0.75f, -0.25f);
+
         advActivity = "Fighting!";
         activityTime = 0.0f;
         //fight the monsters
@@ -215,6 +219,7 @@ public class Adventurer : MonoBehaviour {
             ActiveHeroPanel.Instance.UpdateHeroStats(this);
             yield return null;
         }
+        myNeeds.ResetRates();
         myState.ResetState();
     }
 
@@ -314,12 +319,25 @@ public class Adventurer : MonoBehaviour {
             yield return null;
         }
 
-        hasActivity = false;
+        StartCoroutine(Eat());
     }
 
     public void ChangeHeroHealthDisplay()
     {
         healthBar.rectTransform.localScale = new Vector3((float)HP / (float)maxHP, 1, 1);
+    }
+
+    IEnumerator Eat()
+    {
+        myNeeds.SetNeedRates(2.0f, 0.25f, -0.25f, -0.25f);
+        while (myNeeds.foodNeed < 100.0f)
+        {
+            yield return null;
+        }
+
+        myNeeds.ResetRates();
+        myState.ResetState();
+        hasActivity = false;
     }
 
     public void LevelUp()
