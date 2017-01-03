@@ -8,6 +8,7 @@ TagManager:
   - RestItems
   - TableItems
   - QuestGiver
+  - Exit
   layers:
   - Default
   - TransparentFX

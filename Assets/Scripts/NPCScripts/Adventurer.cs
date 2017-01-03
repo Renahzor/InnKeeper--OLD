@@ -1,5 +1,4 @@
 ﻿
-using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
@@ -7,36 +6,24 @@ using UnityEngine.UI;
 
 public class Adventurer : MonoBehaviour {
 
-    public enum Profession { Fighter, Pickpocket, Acolyte, Apprentice };
-    public enum Race { Human, Elf, Dwarf, Halfling }
-
-    Profession profession;
-    Race race;
-
-    public int level, HP, maxHP;
-    int strength, agility, toughness, smarts, minDamage, maxDamage, exp, gold;
-
-    public string advName;
-
     float attackTimer = 1.0f;
     public string advActivity = "Relaxing...";
     public float activityTime = 0.0f;
-
-    public List<string> statsList = new List<string>();
 
     Quest currentQuest = null;
 
     float stateCheckCooldown = 5.0f;
 
     //state tracking
-    bool atBed, atTable, atQuest, wantsQuest, hasActivity = false;
+    public bool atBed, atTable, atQuest, atExit, wantsQuest, hasActivity = false;
 
     //Store health bar so we dont have to "find" it multiple times
     public Image healthBar = null;
 
-    StateTracker myState;
+    StateTracker state;
     NPCBehaviors behaviors;
-    AdventurerNeeds myNeeds;
+    AdventurerNeeds needs;
+    AdventurerStats stats;
 
     //creates a new random adventurer
     void Awake()
@@ -46,26 +33,11 @@ public class Adventurer : MonoBehaviour {
 
     void NewAdventurer(int _level)
     {
-        profession = (Profession)UnityEngine.Random.Range(0, Enum.GetValues(typeof(Profession)).Length);
-        race = (Race)UnityEngine.Random.Range(0, Enum.GetValues(typeof(Race)).Length);
-        level = _level;
-        strength = 1;
-        agility = 1;
-        toughness = 1;
-        smarts = 1;
-        HP = 10;
-        maxHP = HP;
-        minDamage = 1;
-        maxDamage = 5;
-
-        exp = 0;
-
-        gold = 2;
-        advName = "Random Dude";
-        UpdateStatList();
-        myState = new StateTracker();
+        stats = GetComponent<AdventurerStats>();
+        stats.SetStats(_level);
+        state = new StateTracker();
         behaviors = GetComponent<NPCBehaviors>();
-        myNeeds = GetComponent<AdventurerNeeds>();
+        needs = GetComponent<AdventurerNeeds>();
     }
 
     void Update()
@@ -74,12 +46,12 @@ public class Adventurer : MonoBehaviour {
 
         if (stateCheckCooldown <= 0.0f)
         {
-            myState.UpdateState(GetComponent<AdventurerNeeds>());
+            state.UpdateState(GetComponent<AdventurerNeeds>());
             stateCheckCooldown = 5.0f;
         }
 
         //check for health fist
-        if (HP < maxHP * 0.8 && !hasActivity)
+        if (stats.HP < stats.maxHP * 0.8 && !hasActivity)
         {
             hasActivity = true;
             StartCoroutine(MoveToBed());
@@ -88,7 +60,7 @@ public class Adventurer : MonoBehaviour {
         //if no activity, find an activity that interests the npc
         if (!hasActivity)
         {
-            switch(myState.GetCurrentState())
+            switch(state.GetCurrentState())
             {
                 case StateTracker.States.WantsQuest:
                     GetQuest();
@@ -101,40 +73,6 @@ public class Adventurer : MonoBehaviour {
         }
     }
 
-    void OnTriggerEnter(Collider otherCollider)
-    {
-        if (otherCollider.tag == "RestItems")
-            atBed = true;
-        else if (otherCollider.tag == "TableItems")
-            atTable = true;
-        else if (otherCollider.tag == "QuestGiver")
-            atQuest = true;
-    }
-
-    void OnTriggerExit(Collider otherCollider)
-    {
-        if (otherCollider.tag == "RestItems")
-            atBed = false;
-        else if (otherCollider.tag == "TableItems")
-            atTable = false;
-        else if (otherCollider.tag == "QuestGiver")
-            atQuest = false;
-    }
-
-    public void UpdateStatList()
-    {
-        statsList.Clear();
-        statsList.Add(profession.ToString());
-        statsList.Add(race.ToString());
-
-        statsList.Add("Level: " + level);
-        statsList.Add("Strength: " + strength);
-        statsList.Add("Agility: " + agility);
-        statsList.Add("Toughness: " + toughness);
-        statsList.Add("Smarts: " + smarts);
-        statsList.Add("Gold: " + gold);
-    }
-
     public void GetQuest()
     {
         List<Quest> desireableQuests = new List<Quest>();
@@ -143,7 +81,7 @@ public class Adventurer : MonoBehaviour {
 
         foreach (Quest q in aqm.activeQuests.Keys)
         {
-            if (q.locationIndex + q.locationIndex <= level && q.goldReward >= level)
+            if (q.locationIndex + q.locationIndex <= stats.level && q.goldReward >= stats.level)
             {
                 desireableQuests.Add(q);
             }
@@ -163,7 +101,6 @@ public class Adventurer : MonoBehaviour {
     {
         hasActivity = true;
 
-        this.gameObject.GetComponent<Renderer>().enabled = false;
         List<Enemy> enemies = GameObject.Find("GameMaster").GetComponent<QuestManager>().GenerateEnemyList(q);
         Enemy myTarget = null;
         int enemiesDefeated = 0;
@@ -171,6 +108,17 @@ public class Adventurer : MonoBehaviour {
         //travel to the location
         advActivity = "Traveling...";
         float travelTime = (q.locationIndex + 1) * 12.0f;
+
+        GameObject temp = GameObject.Find("ExitPath");
+
+        while (!atExit)
+        {
+            this.GetComponent<Movement>().MoveTowardTarget(temp.transform);
+            yield return null;
+        }
+
+        this.gameObject.GetComponent<Renderer>().enabled = false;
+
         while (travelTime >= 0.0f)
         {
             travelTime -= Time.deltaTime;
@@ -179,32 +127,33 @@ public class Adventurer : MonoBehaviour {
             yield return null;
         }
 
-        myNeeds.SetNeedRates(-0.5f, -0.5f, 0.75f, -0.25f);
+        needs.SetNeedRates(-0.5f, -0.5f, 0.75f, -0.25f);
 
         advActivity = "Fighting!";
         activityTime = 0.0f;
         //fight the monsters
-        while (currentQuest != null)
+        while (enemies.Count > 0)
         {
             activityTime += Time.deltaTime;
-            int tmpHP = HP;
+            int tmpHP = stats.HP;
 
             foreach (Enemy e in enemies)
-                HP -= e.Attack(10 + agility + toughness);
+                stats.HP -= e.Attack(10 + stats.agility + stats.toughness);
                         
-            if (tmpHP != HP)
+            if (tmpHP != stats.HP)
                 ChangeHeroHealthDisplay();
-            
-            if (myTarget == null)
+
+            if (myTarget == null && enemies.Count > 0)
             {
-                myTarget = enemies[UnityEngine.Random.Range(0, enemies.Count)];
+                myTarget = enemies[Random.Range(0, enemies.Count)];
             }
+
             attackTimer -= Time.deltaTime;
             if (Attack(myTarget))
             {
                 Debug.Log("Target Killed: " + myTarget.name);
+                stats.AddEXP(myTarget.level * 25);
                 enemies.Remove(myTarget);
-                exp += myTarget.level * 25;
                 myTarget = null;
                 enemiesDefeated++; 
             }
@@ -212,15 +161,16 @@ public class Adventurer : MonoBehaviour {
             if (enemies.Count == 0)
                 CompleteQuest(q, enemiesDefeated);
 
-            else if (HP < maxHP * .3)
+            else if (stats.HP < stats.maxHP * .3)
             {
                 Flee(q, enemiesDefeated, enemies);
             }
+
             ActiveHeroPanel.Instance.UpdateHeroStats(this);
             yield return null;
         }
-        myNeeds.ResetRates();
-        myState.ResetState();
+        needs.ResetRates();
+        state.ResetState();
     }
 
     public bool Attack(Enemy target)
@@ -231,29 +181,13 @@ public class Adventurer : MonoBehaviour {
         }
 
         attackTimer = 2.0f;
-        if (UnityEngine.Random.Range(1, 20) + agility >= target.armor)
+        if (UnityEngine.Random.Range(1, 20) + stats.agility >= target.armor)
         {
-            if (target.ReduceHP(UnityEngine.Random.Range(minDamage, maxDamage)))
+            if (target.ReduceHP(UnityEngine.Random.Range(stats.minDamage + stats.strength, stats.maxDamage + stats.strength)))
                 return true;
         }
 
         return false;
-    }
-
-    public void CompleteQuest(Quest q, int numberDefeated)
-    {
-        Player p = GameObject.Find("PlayerTest").GetComponent<Player>();
-        InventoryMaster.Instance.AddItem(q.objectiveIndex, numberDefeated);
-        
-        p.playerGold -= q.goldReward;
-        gold += q.goldReward;
-        this.gameObject.GetComponent<Renderer>().enabled = true;
-        gameObject.transform.position = new Vector3(-7, -4.4f, -0.1f);
-        currentQuest = null;
-        p.UpdateGoldDisplay();
-        advActivity = "Relaxing..";
-        activityTime = 0.0f;
-        hasActivity = false;
     }
 
     public void Flee(Quest q, int numberDefeated, List<Enemy> remainingEnemies)
@@ -261,8 +195,9 @@ public class Adventurer : MonoBehaviour {
         //each enemy gets a final attack as the hero flees
         foreach (Enemy e in remainingEnemies)
         {
-            HP -= e.Attack(10 + agility + toughness);
+            stats.HP -= e.Attack(10 + stats.agility + stats.toughness);
         }
+        remainingEnemies.Clear();
 
         CompleteQuest(q, numberDefeated);
     }
@@ -283,12 +218,12 @@ public class Adventurer : MonoBehaviour {
     IEnumerator Sleep()
     {
         float healTimer = 3.0f;
-        while (HP < maxHP)
+        while (stats.HP < stats.maxHP)
         {
             healTimer -= Time.deltaTime;
             if (healTimer <= 0.0f)
             {
-                HP += toughness;
+                stats.HP += stats.toughness;
                 ChangeHeroHealthDisplay();
                 healTimer = 3.0f;
             }
@@ -324,24 +259,65 @@ public class Adventurer : MonoBehaviour {
 
     public void ChangeHeroHealthDisplay()
     {
-        healthBar.rectTransform.localScale = new Vector3((float)HP / (float)maxHP, 1, 1);
+        healthBar.rectTransform.localScale = new Vector3((float)stats.HP / (float)stats.maxHP, 1, 1);
     }
 
     IEnumerator Eat()
     {
-        myNeeds.SetNeedRates(2.0f, 0.25f, -0.25f, -0.25f);
-        while (myNeeds.foodNeed < 100.0f)
+        needs.SetNeedRates(2.0f, 0.25f, -0.25f, -0.25f);
+        while (needs.foodNeed < 100.0f)
         {
             yield return null;
         }
 
-        myNeeds.ResetRates();
-        myState.ResetState();
+        needs.ResetRates();
+        state.ResetState();
         hasActivity = false;
     }
 
     public void LevelUp()
     {
 
+    }
+
+    public void CompleteQuest(Quest q, int numberDefeated)
+    {
+        Player p = GameObject.Find("PlayerTest").GetComponent<Player>();
+        InventoryMaster.Instance.AddItem(q.objectiveIndex, numberDefeated);
+
+        p.playerGold -= q.goldReward;
+        stats.gold += q.goldReward;
+        this.gameObject.GetComponent<Renderer>().enabled = true;
+        gameObject.transform.position = new Vector3(-7, -4.4f, -0.1f);
+        currentQuest = null;
+        p.UpdateGoldDisplay();
+        advActivity = "Relaxing..";
+        activityTime = 0.0f;
+        hasActivity = false;
+    }
+
+    void OnTriggerEnter(Collider otherCollider)
+    {
+        if (otherCollider.tag == "RestItems")
+            atBed = true;
+        else if (otherCollider.tag == "TableItems")
+            atTable = true;
+        else if (otherCollider.tag == "QuestGiver")
+            atQuest = true;
+        else if (otherCollider.tag == "Exit")
+            atExit = true;
+
+    }
+
+    void OnTriggerExit(Collider otherCollider)
+    {
+        if (otherCollider.tag == "RestItems")
+            atBed = false;
+        else if (otherCollider.tag == "TableItems")
+            atTable = false;
+        else if (otherCollider.tag == "QuestGiver")
+            atQuest = false;
+        else if (otherCollider.tag == "Exit")
+            atExit = false;
     }
 }

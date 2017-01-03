@@ -36,7 +36,7 @@ public class ActiveHeroPanel : MonoBehaviour {
         foreach(Text t in textComponents)
         {
             if (t.name == "HeroName")
-                t.text = a.advName;
+                t.text = a.gameObject.GetComponent<AdventurerStats>().advName;
             else if (t.name == "Activity")
                 t.text = a.advActivity;
             else if (t.name == "Time")

@@ -19,8 +19,12 @@ public class GameMaster : MonoBehaviour {
 
     void Awake()
     {
-        var adv = Instantiate(adventurerPrefab);
-        activeAdventurerWindow.GetComponent<ActiveHeroPanel>().AddHero(adv.GetComponent<Adventurer>());
+        for (int i = 0; i <= 5; i++)
+        {
+            var adv = Instantiate(adventurerPrefab);
+            activeAdventurerWindow.GetComponent<ActiveHeroPanel>().AddHero(adv.GetComponent<Adventurer>());
+            adv.GetComponent<Renderer>().material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+        }
     }
 
     void Start()
@@ -55,7 +59,7 @@ public class GameMaster : MonoBehaviour {
                 if (hit.transform.tag == "NPC")
                 {
                     selectedAdventurer = hit.transform.GetComponent<Adventurer>();
-                    npcNameDisplay.text = "Character: " + selectedAdventurer.advName;
+                    npcNameDisplay.text = "Character: " + selectedAdventurer.gameObject.GetComponent<AdventurerStats>().advName;
                 }
             }
 

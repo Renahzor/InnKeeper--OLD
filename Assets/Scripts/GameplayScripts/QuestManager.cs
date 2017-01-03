@@ -26,9 +26,10 @@ public class QuestManager : MonoBehaviour {
 
     public List<Enemy> GenerateEnemyList(Quest q)
     {
-        List<Enemy> tmp = new List<Enemy>(); 
-        for (int i = 0; i < 3; i++)
-            tmp.Add(new Enemy("Rat " + i, 5, 1));
+        List<Enemy> tmp = new List<Enemy>();
+        int numberOfEnemies = Random.Range(2, 6);
+        for (int i = 0; i < numberOfEnemies; i++)
+            tmp.Add(new Enemy("Rat " + i, (q.objectiveIndex + 1 * Random.Range(2,5)), q.locationIndex + 1));
 
         return tmp;
     }
