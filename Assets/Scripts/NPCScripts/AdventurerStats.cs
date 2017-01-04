@@ -82,6 +82,7 @@ public class AdventurerStats : MonoBehaviour {
                     smarts++;
                 else
                     agility++;
+                maxHP += toughness;
                 break;
             case Profession.Acolyte:
                 level++;
@@ -91,6 +92,7 @@ public class AdventurerStats : MonoBehaviour {
                     toughness++;
                 else
                     agility++;
+                maxHP += toughness;
                 break;
             case Profession.Apprentice:
                 level++;
@@ -100,6 +102,7 @@ public class AdventurerStats : MonoBehaviour {
                     strength++;
                 else
                     toughness++;
+                maxHP += toughness;
                 break;
             case Profession.Pickpocket:
                 level++;
@@ -109,6 +112,7 @@ public class AdventurerStats : MonoBehaviour {
                     smarts++;
                 else
                     toughness++;
+                maxHP += toughness;
                 break;
             default:
                 break;

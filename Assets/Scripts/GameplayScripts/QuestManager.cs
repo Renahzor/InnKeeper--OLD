@@ -7,13 +7,12 @@ public class QuestManager : MonoBehaviour {
     public List<string> questLocationsList = new List<string>();
     public List<string> questObjectivesList = new List<string>();
 
+    public int currentLevel = 1;
+
     void Awake()
     {
         questLocationsList.Add("Inn Basement");
-        //questLocationsList.Add("Old Mill");
-
-        questObjectivesList.Add("Rat Tails");
-        //questObjectivesList.Add("Ogre Knuckles");
+        questObjectivesList.Add("Rat Tails");        
     }
 
     public string GetQuestDescription(int locationIndex, int objectiveIndex)
@@ -29,8 +28,28 @@ public class QuestManager : MonoBehaviour {
         List<Enemy> tmp = new List<Enemy>();
         int numberOfEnemies = Random.Range(2, 6);
         for (int i = 0; i < numberOfEnemies; i++)
-            tmp.Add(new Enemy("Rat " + i, (q.objectiveIndex + 1 * Random.Range(2,5)), q.locationIndex + 1));
+        {
+            string enemyName = "Ogre ";
+            if (q.objectiveIndex == 0)
+                enemyName = "Rat ";
+            tmp.Add(new Enemy(enemyName + i, (q.objectiveIndex + 1 * Random.Range(2, 5)), q.locationIndex + 1));
+        }
 
         return tmp;
+    }
+
+    public void IncreaseQuestLevel()
+    {
+        currentLevel++;
+
+        switch (currentLevel)
+        {
+            case 2:
+                questLocationsList.Add("Old Mill");
+                questObjectivesList.Add("Ogre Knuckles");
+                break;
+            default:
+                break;
+        }
     }
 }

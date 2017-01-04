@@ -223,7 +223,7 @@ public class Adventurer : MonoBehaviour {
             healTimer -= Time.deltaTime;
             if (healTimer <= 0.0f)
             {
-                stats.HP += stats.toughness;
+                stats.HP = Mathf.Clamp(stats.HP += stats.toughness, 0, stats.maxHP);                
                 ChangeHeroHealthDisplay();
                 healTimer = 3.0f;
             }
@@ -294,6 +294,7 @@ public class Adventurer : MonoBehaviour {
         advActivity = "Relaxing..";
         activityTime = 0.0f;
         hasActivity = false;
+        GameMaster.Instance.questsCompleted++;
     }
 
     void OnTriggerEnter(Collider otherCollider)

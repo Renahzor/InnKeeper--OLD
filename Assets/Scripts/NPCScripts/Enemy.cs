@@ -13,7 +13,7 @@ public class Enemy{
         HP = _hpMax;
         level = _level;
         attackMin = Random.Range(1, _level * 2);
-        attackMax = Random.Range(attackMax, _level * 4);
+        attackMax = Random.Range(attackMin, _level * 4);
         attackTimer = Random.Range(1.0f, 5.0f);
         attackSwingReset = Random.Range(2.0f, 6.0f);
         attackBonusChance = _level;

@@ -1,8 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UI;
+using System;
 
 public class GameMaster : MonoBehaviour {
+
+    public static GameMaster Instance { get; private set; }
 
     public GameObject adventurerPrefab;
     public GameObject questWindow;
@@ -14,29 +17,33 @@ public class GameMaster : MonoBehaviour {
     //Generic Display Elements
     public Text npcNameDisplay;
     Adventurer selectedAdventurer = null;
+    QuestManager questManager;
 
     public int questsCompleted = 0;
 
     void Awake()
     {
+        Instance = this;
+
         for (int i = 0; i <= 5; i++)
         {
             var adv = Instantiate(adventurerPrefab);
             activeAdventurerWindow.GetComponent<ActiveHeroPanel>().AddHero(adv.GetComponent<Adventurer>());
-            adv.GetComponent<Renderer>().material.color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+            adv.GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
         }
     }
 
     void Start()
     {
         questWindow.SetActive(false);
+        questManager = GetComponent<QuestManager>();
     }
 
     void Update()
     {
         if (Input.GetKeyDown("q"))
             questWindow.SetActive(!questWindow.activeSelf);
-
+        
         if (Input.GetKeyDown("i"))
             inventoryWindow.SetActive(!inventoryWindow.activeSelf);
 
@@ -68,6 +75,11 @@ public class GameMaster : MonoBehaviour {
                 npcNameDisplay.text = "Character: None";
                 selectedAdventurer = null;
             }
+        }
+
+        if (questsCompleted == 10)
+        {
+            questManager.IncreaseQuestLevel();
         }
     }
 }

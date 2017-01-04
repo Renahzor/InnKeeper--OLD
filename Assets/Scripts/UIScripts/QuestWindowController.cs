@@ -13,12 +13,23 @@ public class QuestWindowController : MonoBehaviour
     public Dropdown questLocationDropdown;
     public InputField rewardInput;
 
+    int questLevel = 1;
+
     void Start()
     {
         UpdateDropdownText(questLocationDropdown, questManager.questLocationsList);
         UpdateDropdownText(questObjectiveDropdown, questManager.questObjectivesList);
     }
 
+    void Update()
+    {
+        if(questLevel < questManager.currentLevel)
+        {
+            UpdateDropdownText(questLocationDropdown, questManager.questLocationsList);
+            UpdateDropdownText(questObjectiveDropdown, questManager.questObjectivesList);
+            questLevel = questManager.currentLevel;
+        }
+    }
 
     public void UpdateDropdownText(Dropdown d, List<string> list)
     {
