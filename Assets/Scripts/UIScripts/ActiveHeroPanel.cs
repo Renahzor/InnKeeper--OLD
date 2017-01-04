@@ -24,7 +24,7 @@ public class ActiveHeroPanel : MonoBehaviour {
             temp.transform.SetParent(this.transform, false);
             activeHeroes.Add(a, temp);
             UpdateHeroStats(a);
-            a.healthBar = temp.transform.FindChild("HealthBar").GetComponent<Image>();
+            a.GetComponent<NPCBehaviors>().healthBar = temp.transform.FindChild("HealthBar").GetComponent<Image>();
         }    
     }
 
@@ -38,9 +38,9 @@ public class ActiveHeroPanel : MonoBehaviour {
             if (t.name == "HeroName")
                 t.text = a.gameObject.GetComponent<AdventurerStats>().advName;
             else if (t.name == "Activity")
-                t.text = a.advActivity;
+                t.text = a.GetComponent<StateTracker>().advActivity;
             else if (t.name == "Time")
-                t.text = a.activityTime.ToString("F2");
+                t.text = a.GetComponent<StateTracker>().activityTime.ToString("F2");
         }
     }
 }

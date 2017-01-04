@@ -17,6 +17,7 @@ GameObject:
   - 114: {fileID: 11401026}
   - 114: {fileID: 11477798}
   - 114: {fileID: 11400492}
+  - 114: {fileID: 11410968}
   m_Layer: 0
   m_Name: NPCTest
   m_TagString: NPC
@@ -104,8 +105,9 @@ MonoBehaviour:
   smarts: 0
   minDamage: 0
   maxDamage: 0
-  exp: 0
   gold: 0
+  exp: 0
+  levelUpExp: 0
   advName: 
   statsList: []
 --- !u!114 &11401026
@@ -123,6 +125,26 @@ MonoBehaviour:
   drinkNeed: 100
   questNeed: 100
   socialNeed: 100
+--- !u!114 &11410968
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 172432}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17f84383e09071d4aba84c76506c6578, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  atBed: 0
+  atTable: 0
+  atQuest: 0
+  atExit: 0
+  wantsQuest: 0
+  hasActivity: 0
+  advActivity: Relaxing...
+  activityTime: 0
+  attackTimer: 1
 --- !u!114 &11425596
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -146,6 +168,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00cd5f70f9a2bf348bc0ce6a1bc51771, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  healthBar: {fileID: 0}
 --- !u!114 &11486294
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -157,14 +180,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec1499e0bea9e4e448592b2179e3f9fe, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  advActivity: Relaxing...
-  activityTime: 0
-  atBed: 0
-  atTable: 0
-  atQuest: 0
-  wantsQuest: 0
-  hasActivity: 0
-  healthBar: {fileID: 0}
 --- !u!135 &13518084
 SphereCollider:
   m_ObjectHideFlags: 1

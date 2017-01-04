@@ -1,8 +1,19 @@
-﻿public class StateTracker{
+﻿using UnityEngine;
+
+public class StateTracker : MonoBehaviour{
 
     public enum States { Idle, WantsFood, WantsDrink, WantsQuest, WantsSocial, WantsHealth }
 
     States state = States.Idle;
+
+    //state tracking
+    public bool atBed, atTable, atQuest, atExit, wantsQuest, hasActivity = false;
+
+    public string advActivity = "Relaxing...";
+    public float activityTime = 0.0f;
+    public float attackTimer = 1.0f;
+
+    public Quest currentQuest = null;
 
     public States GetCurrentState()
     {

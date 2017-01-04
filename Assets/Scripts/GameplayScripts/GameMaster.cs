@@ -7,16 +7,14 @@ public class GameMaster : MonoBehaviour {
 
     public static GameMaster Instance { get; private set; }
 
-    public GameObject adventurerPrefab;
-    public GameObject questWindow;
-    public GameObject inventoryWindow;
-    public GameObject activeAdventurerWindow;
-    public GameObject ledgerWindow;
-    public GameObject activeQuestWindow;
+    [SerializeField]
+    GameObject adventurerPrefab, questWindow, inventoryWindow, activeAdventurerWindow, ledgerWindow, activeQuestWindow;
+    List<Adventurer> deceasedAdventurers = new List<Adventurer>();
 
     //Generic Display Elements
     public Text npcNameDisplay;
     Adventurer selectedAdventurer = null;
+
     QuestManager questManager;
 
     public int questsCompleted = 0;
