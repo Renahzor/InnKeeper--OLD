@@ -105,15 +105,17 @@ public class NPCBehaviors : MonoBehaviour {
                 enemiesDefeated++;
             }
 
-            if (enemies.Count == 0)
+            ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
+
+            if (enemies.Count == 0 || stats.HP <= 0)
+            {
                 CompleteQuest(q, enemiesDefeated);
+            }
 
             else if (stats.HP < stats.maxHP * .3)
             {
                 Flee(q, enemiesDefeated, enemies);
             }
-
-            ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
             yield return null;
         }
         needs.ResetRates();
@@ -224,19 +226,28 @@ public class NPCBehaviors : MonoBehaviour {
 
     public void CompleteQuest(Quest q, int numberDefeated)
     {
-        Player p = GameObject.Find("PlayerTest").GetComponent<Player>();
-        InventoryMaster.Instance.AddItem(q.objectiveIndex, numberDefeated);
+        if (stats.HP <= 0)
+        {
+            KillNPC();
+        }
 
-        p.playerGold -= q.goldReward;
-        stats.gold += q.goldReward;
-        this.gameObject.GetComponent<Renderer>().enabled = true;
-        gameObject.transform.position = new Vector3(-7, -4.4f, -0.1f);
-        state.currentQuest = null;
-        p.UpdateGoldDisplay();
-        state.advActivity = "Relaxing..";
-        state.activityTime = 0.0f;
-        state.hasActivity = false;
-        GameMaster.Instance.questsCompleted++;
+        else
+        {
+            Player p = GameObject.Find("PlayerTest").GetComponent<Player>();
+            InventoryMaster.Instance.AddItem(q.objectiveIndex, numberDefeated);
+
+            p.playerGold -= q.goldReward;
+            stats.gold += q.goldReward;
+            this.gameObject.GetComponent<Renderer>().enabled = true;
+            gameObject.transform.position = new Vector3(-7, -4.4f, -0.1f);
+            state.currentQuest = null;
+            p.UpdateGoldDisplay();
+            state.advActivity = "Relaxing..";
+            state.activityTime = 0.0f;
+            state.hasActivity = false;
+            GameMaster.Instance.questsCompleted++;
+            ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
+        }
     }
 
     void OnTriggerEnter(Collider otherCollider)
@@ -263,4 +274,10 @@ public class NPCBehaviors : MonoBehaviour {
             state.atExit = false;
     }
 
+
+    void KillNPC()
+    {
+        GameMaster.Instance.KillAdventurer(gameObject.GetComponent<Adventurer>());
+        GameObject.Destroy(this);
+    }
 }

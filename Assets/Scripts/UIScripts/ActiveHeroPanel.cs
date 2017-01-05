@@ -43,4 +43,13 @@ public class ActiveHeroPanel : MonoBehaviour {
                 t.text = a.GetComponent<StateTracker>().activityTime.ToString("F2");
         }
     }
+
+    public void RemoveHero(Adventurer a)
+    {
+        if (activeHeroes.ContainsKey(a))
+        {
+            GameObject.Destroy(activeHeroes[a]);
+            activeHeroes.Remove(a);
+        }
+    }
 }

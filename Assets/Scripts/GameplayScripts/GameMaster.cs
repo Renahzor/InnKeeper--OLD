@@ -80,4 +80,10 @@ public class GameMaster : MonoBehaviour {
             questManager.IncreaseQuestLevel();
         }
     }
+
+    public void KillAdventurer(Adventurer a)
+    {
+        deceasedAdventurers.Add(a);
+        ActiveHeroPanel.Instance.RemoveHero(a);
+    }
 }
