@@ -653,6 +653,7 @@ GameObject:
   - component: {fileID: 244578358}
   - component: {fileID: 244578357}
   - component: {fileID: 244578356}
+  - component: {fileID: 244578359}
   m_Layer: 5
   m_Name: Inventory Panel
   m_TagString: Untagged
@@ -734,6 +735,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 244578354}
+--- !u!114 &244578359
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 244578354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e305685638b98794c8912d846d3cf999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &251566470
 GameObject:
   m_ObjectHideFlags: 0
@@ -1625,6 +1637,7 @@ GameObject:
   - component: {fileID: 490110472}
   - component: {fileID: 490110471}
   - component: {fileID: 490110473}
+  - component: {fileID: 490110474}
   m_Layer: 5
   m_Name: QuestWindow
   m_TagString: Untagged
@@ -1703,6 +1716,17 @@ MonoBehaviour:
   questObjectiveDropdown: {fileID: 1915482215}
   questLocationDropdown: {fileID: 291192807}
   rewardInput: {fileID: 800653293}
+--- !u!114 &490110474
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 490110469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e305685638b98794c8912d846d3cf999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &549140174
 GameObject:
   m_ObjectHideFlags: 0
@@ -3595,6 +3619,7 @@ GameObject:
   - component: {fileID: 1299727208}
   - component: {fileID: 1299727207}
   - component: {fileID: 1299727206}
+  - component: {fileID: 1299727209}
   m_Layer: 5
   m_Name: QuestTimers
   m_TagString: Untagged
@@ -3675,6 +3700,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1299727204}
+--- !u!114 &1299727209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1299727204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e305685638b98794c8912d846d3cf999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1397263806
 GameObject:
   m_ObjectHideFlags: 0
@@ -3794,6 +3830,7 @@ GameObject:
   - component: {fileID: 1441181571}
   - component: {fileID: 1441181570}
   - component: {fileID: 1441181573}
+  - component: {fileID: 1441181574}
   m_Layer: 5
   m_Name: Ledger Panel
   m_TagString: Untagged
@@ -3874,6 +3911,17 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 0
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!114 &1441181574
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1441181569}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e305685638b98794c8912d846d3cf999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1477069464
 GameObject:
   m_ObjectHideFlags: 0
@@ -3940,6 +3988,7 @@ MonoBehaviour:
   activeQuestWindow: {fileID: 1299727204}
   npcNameDisplay: {fileID: 798783754}
   questsCompleted: 0
+  innRating: 10
 --- !u!114 &1477069468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4923,6 +4972,7 @@ GameObject:
   - component: {fileID: 2140086678}
   - component: {fileID: 2140086680}
   - component: {fileID: 2140086681}
+  - component: {fileID: 2140086682}
   m_Layer: 5
   m_Name: ActiveHeroPanel
   m_TagString: Untagged
@@ -5015,3 +5065,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   activeHeroInfo: {fileID: 178178, guid: 887c6a5199695c74baa383edb8daa211, type: 2}
+--- !u!114 &2140086682
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2140086676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e305685638b98794c8912d846d3cf999, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

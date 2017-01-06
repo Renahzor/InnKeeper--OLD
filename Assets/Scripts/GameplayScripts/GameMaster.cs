@@ -18,6 +18,7 @@ public class GameMaster : MonoBehaviour {
     QuestManager questManager;
 
     public int questsCompleted = 0;
+    public int innRating = 10;
 
     void Awake()
     {
