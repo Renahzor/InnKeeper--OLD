@@ -4,10 +4,12 @@ public class StateTracker : MonoBehaviour{
 
     public enum States { Idle, WantsFood, WantsDrink, WantsQuest, WantsSocial, WantsHealth }
 
+    public GameObject objectCurrentlyTouching = null;
+
     States state = States.Idle;
 
     //state tracking
-    public bool atBed, atTable, atQuest, atExit, wantsQuest, atIdleActivity, hasActivity = false;
+    public bool wantsQuest, hasActivity = false;
 
     public string advActivity = "Relaxing...";
     public float activityTime = 0.0f;

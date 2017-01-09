@@ -6,6 +6,8 @@ using UnityEngine.UI;
 //move AI behaviors here
 public class NPCBehaviors : MonoBehaviour {
 
+    public enum InteractableObjects { Bed, QuestMarker, Exit, Bar, Table, IdleActivity }
+
     //Store health bar so we dont have to "find" it multiple times
     public Image healthBar = null;
 
@@ -39,7 +41,7 @@ public class NPCBehaviors : MonoBehaviour {
         {
             state.currentQuest = desireableQuests[UnityEngine.Random.Range(0, desireableQuests.Count)];
             state.hasActivity = true;
-            StartCoroutine(MoveToQuest(state.currentQuest));
+            StartCoroutine(MoveTo(InteractableObjects.QuestMarker, state.currentQuest));
         }
 
         return;
@@ -60,7 +62,7 @@ public class NPCBehaviors : MonoBehaviour {
 
         GameObject temp = GameObject.Find("ExitPath");
 
-        while (!state.atExit)
+        while (state.objectCurrentlyTouching != temp)
         {
             this.GetComponent<Movement>().MoveTowardTarget(temp.transform);
             yield return null;
@@ -125,7 +127,7 @@ public class NPCBehaviors : MonoBehaviour {
         state.ResetState();
     }
 
-    //Helper method for attacking an enemy, math may change at a later time
+    //Helper method for attacking an enemy, math for damage and hit chance may change at a later time
     public bool Attack(Enemy target)
     {
         if (state.attackTimer > 0.0f)
@@ -144,7 +146,7 @@ public class NPCBehaviors : MonoBehaviour {
     }
 
     //when a hero decides to flee, all enemies get one extra attack
-    public void Flee(Quest q, int numberDefeated, List<Enemy> remainingEnemies)
+    void Flee(Quest q, int numberDefeated, List<Enemy> remainingEnemies)
     {
         //each enemy gets a final attack as the hero flees
         foreach (Enemy e in remainingEnemies)
@@ -156,59 +158,75 @@ public class NPCBehaviors : MonoBehaviour {
         CompleteQuest(q, numberDefeated);
     }
 
-    //moveto routines for different objects within the inn
-    public IEnumerator MoveToBed()
+    //moveto routine for different objects within the inn
+    public IEnumerator MoveTo(InteractableObjects target, Quest q = null)
     {
-        GameObject temp = GameObject.Find("Bed");
-
-        while (!state.atBed)
-        {
-            this.GetComponent<Movement>().MoveTowardTarget(temp.transform);
-            yield return null;
-        }
-
-        StartCoroutine(Sleep());
-    }
-
-    IEnumerator MoveToQuest(Quest q)
-    {
-        GameObject temp = GameObject.Find("PlayerTest");
-        while (!state.atQuest)
-        {
-            this.GetComponent<Movement>().MoveTowardTarget(temp.transform);
-            yield return null;
-        }
-        StartCoroutine(RunQuest(q));
-    }
-
-    public IEnumerator MoveToTable()
-    {
+        GameObject targetSelected = null;
+        List<GameObject> possibleTargets = new List<GameObject>();
         state.hasActivity = true;
-        GameObject temp = GameObject.Find("Table");
-        while (!state.atTable)
+
+        switch (target)
         {
-            this.GetComponent<Movement>().MoveTowardTarget(temp.transform);
-            yield return null;
+            case InteractableObjects.Bed:
+                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("RestItems"));                
+                break;
+            case InteractableObjects.Exit:
+                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("ExitPath"));                
+                break;
+            case InteractableObjects.QuestMarker:
+                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("QuestGiver"));                
+                break;
+            case InteractableObjects.IdleActivity:
+                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("IdleActivity"));                
+                break;
+            case InteractableObjects.Table:
+                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("TableItems"));                
+                break;
+            default:
+                break;
         }
 
-        StartCoroutine(Eat());
+        targetSelected = SelectTrarget(possibleTargets);
+
+        if (targetSelected != null)
+        {
+            while (state.objectCurrentlyTouching != targetSelected)
+            {
+                this.GetComponent<Movement>().MoveTowardTarget(targetSelected.transform);
+                yield return null;
+            }
+        }
+
+        else { Debug.Log("No Target of type selected: MoveTo() failed"); }
+
+        switch (target)
+        {
+            case InteractableObjects.Bed:
+                StartCoroutine(Sleep());
+                break;
+            case InteractableObjects.Table:
+                StartCoroutine(Eat());
+                break;
+            case InteractableObjects.QuestMarker:
+                if (q != null)
+                    StartCoroutine(RunQuest(q));
+                break;
+            case InteractableObjects.IdleActivity:
+                state.hasActivity = false;
+                break;
+            default: break;
+        }
     }
 
-    public IEnumerator IdleAction()
+    GameObject SelectTrarget(List<GameObject> possibleTargets)
     {
-        state.hasActivity = true;
-        GameObject temp = GameObject.Find("IdleActivity");
+        if (possibleTargets != null)
+            return possibleTargets[Random.Range(0, possibleTargets.Count)];
 
-        while (!state.atIdleActivity)
-        {
-            this.GetComponent<Movement>().MoveTowardTarget(temp.transform);
-            yield return null;
-        }
-
-        state.hasActivity = false;
+        else return null;
     }
 
-    public void ChangeHeroHealthDisplay()
+    void ChangeHeroHealthDisplay()
     {
         healthBar.rectTransform.localScale = new Vector3((float)stats.HP / (float)stats.maxHP, 1, 1);
     }
@@ -245,7 +263,7 @@ public class NPCBehaviors : MonoBehaviour {
         state.hasActivity = false;
     }
 
-    public void CompleteQuest(Quest q, int numberDefeated)
+    void CompleteQuest(Quest q, int numberDefeated)
     {
         if (stats.HP <= 0)
         {
@@ -277,30 +295,12 @@ public class NPCBehaviors : MonoBehaviour {
     //state modification for colliders, detects when NPCs are at specific interactable objects.
     void OnTriggerEnter(Collider otherCollider)
     {
-        if (otherCollider.tag == "RestItems")
-            state.atBed = true;
-        else if (otherCollider.tag == "TableItems")
-            state.atTable = true;
-        else if (otherCollider.tag == "QuestGiver")
-            state.atQuest = true;
-        else if (otherCollider.tag == "Exit")
-            state.atExit = true;
-        else if (otherCollider.tag == "IdleActivity")
-            state.atIdleActivity = true;
+        state.objectCurrentlyTouching = otherCollider.gameObject;
     }
 
     void OnTriggerExit(Collider otherCollider)
     {
-        if (otherCollider.tag == "RestItems")
-            state.atBed = false;
-        else if (otherCollider.tag == "TableItems")
-            state.atTable = false;
-        else if (otherCollider.tag == "QuestGiver")
-            state.atQuest = false;
-        else if (otherCollider.tag == "Exit")
-            state.atExit = false;
-        else if (otherCollider.tag == "IdleActivity")
-            state.atIdleActivity = false;
+        state.objectCurrentlyTouching = null;
     }
 
     void KillNPC()

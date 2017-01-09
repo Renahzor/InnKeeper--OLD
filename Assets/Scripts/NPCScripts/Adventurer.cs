@@ -42,7 +42,7 @@ public class Adventurer : MonoBehaviour {
         if (stats.HP < stats.maxHP * 0.8 && !state.hasActivity)
         {
             state.hasActivity = true;
-            StartCoroutine(behaviors.MoveToBed());
+            StartCoroutine(behaviors.MoveTo(NPCBehaviors.InteractableObjects.Bed));
         }
 
         //if no activity, find an activity that most interests the npc
@@ -54,10 +54,10 @@ public class Adventurer : MonoBehaviour {
                     behaviors.GetQuest();
                     break;                   
                 case StateTracker.States.WantsFood:
-                    StartCoroutine(behaviors.MoveToTable());
+                    StartCoroutine(behaviors.MoveTo(NPCBehaviors.InteractableObjects.Table));
                     break;
                 case StateTracker.States.Idle:
-                    StartCoroutine(behaviors.IdleAction());
+                    StartCoroutine(behaviors.MoveTo(NPCBehaviors.InteractableObjects.IdleActivity));
                     break;
                 default: break;   
             }
