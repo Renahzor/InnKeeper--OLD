@@ -7,7 +7,7 @@ public class StateTracker : MonoBehaviour{
     States state = States.Idle;
 
     //state tracking
-    public bool atBed, atTable, atQuest, atExit, wantsQuest, hasActivity = false;
+    public bool atBed, atTable, atQuest, atExit, wantsQuest, atIdleActivity, hasActivity = false;
 
     public string advActivity = "Relaxing...";
     public float activityTime = 0.0f;

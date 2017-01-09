@@ -19,7 +19,8 @@ public class NPCBehaviors : MonoBehaviour {
         needs = GetComponent<AdventurerNeeds>();
         stats = GetComponent<AdventurerStats>();
     }
-
+    
+    //Routine to select and accept a quest
     public void GetQuest()
     {
         List<Quest> desireableQuests = new List<Quest>();
@@ -44,6 +45,7 @@ public class NPCBehaviors : MonoBehaviour {
         return;
     }
 
+    //routine to leave the Inn, travel to and run quests
     IEnumerator RunQuest(Quest q)
     {
         state.hasActivity = true;
@@ -78,7 +80,8 @@ public class NPCBehaviors : MonoBehaviour {
 
         state.advActivity = "Fighting!";
         state.activityTime = 0.0f;
-        //fight the monsters
+
+        //fight the monsters whilw there are monsters to fight
         while (enemies.Count > 0)
         {
             state.activityTime += Time.deltaTime;
@@ -122,6 +125,7 @@ public class NPCBehaviors : MonoBehaviour {
         state.ResetState();
     }
 
+    //Helper method for attacking an enemy, math may change at a later time
     public bool Attack(Enemy target)
     {
         if (state.attackTimer > 0.0f)
@@ -139,6 +143,7 @@ public class NPCBehaviors : MonoBehaviour {
         return false;
     }
 
+    //when a hero decides to flee, all enemies get one extra attack
     public void Flee(Quest q, int numberDefeated, List<Enemy> remainingEnemies)
     {
         //each enemy gets a final attack as the hero flees
@@ -151,6 +156,7 @@ public class NPCBehaviors : MonoBehaviour {
         CompleteQuest(q, numberDefeated);
     }
 
+    //moveto routines for different objects within the inn
     public IEnumerator MoveToBed()
     {
         GameObject temp = GameObject.Find("Bed");
@@ -162,24 +168,6 @@ public class NPCBehaviors : MonoBehaviour {
         }
 
         StartCoroutine(Sleep());
-    }
-
-    IEnumerator Sleep()
-    {
-        float healTimer = 3.0f;
-        while (stats.HP < stats.maxHP)
-        {
-            healTimer -= Time.deltaTime;
-            if (healTimer <= 0.0f)
-            {
-                stats.HP = Mathf.Clamp(stats.HP += stats.toughness, 0, stats.maxHP);
-                ChangeHeroHealthDisplay();
-                healTimer = 3.0f;
-            }
-            yield return null;
-        }
-
-        state.hasActivity = false;
     }
 
     IEnumerator MoveToQuest(Quest q)
@@ -206,9 +194,42 @@ public class NPCBehaviors : MonoBehaviour {
         StartCoroutine(Eat());
     }
 
+    public IEnumerator IdleAction()
+    {
+        state.hasActivity = true;
+        GameObject temp = GameObject.Find("IdleActivity");
+
+        while (!state.atIdleActivity)
+        {
+            this.GetComponent<Movement>().MoveTowardTarget(temp.transform);
+            yield return null;
+        }
+
+        state.hasActivity = false;
+    }
+
     public void ChangeHeroHealthDisplay()
     {
         healthBar.rectTransform.localScale = new Vector3((float)stats.HP / (float)stats.maxHP, 1, 1);
+    }
+
+    //activity routines
+    IEnumerator Sleep()
+    {
+        float healTimer = 3.0f;
+        while (stats.HP < stats.maxHP)
+        {
+            healTimer -= Time.deltaTime;
+            if (healTimer <= 0.0f)
+            {
+                stats.HP = Mathf.Clamp(stats.HP += stats.toughness, 0, stats.maxHP);
+                ChangeHeroHealthDisplay();
+                healTimer = 3.0f;
+            }
+            yield return null;
+        }
+
+        state.hasActivity = false;
     }
 
     IEnumerator Eat()
@@ -239,17 +260,21 @@ public class NPCBehaviors : MonoBehaviour {
             p.playerGold -= q.goldReward;
             stats.gold += q.goldReward;
             this.gameObject.GetComponent<Renderer>().enabled = true;
-            gameObject.transform.position = new Vector3(-7, -4.4f, -0.1f);
+
+            //spawn point
+            gameObject.transform.position = new Vector3(-7, -4.4f, -0.1f);           
+
             state.currentQuest = null;
             p.UpdateGoldDisplay();
             state.advActivity = "Relaxing..";
             state.activityTime = 0.0f;
             state.hasActivity = false;
             GameMaster.Instance.questsCompleted++;
-            ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
+            ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());            
         }
     }
 
+    //state modification for colliders, detects when NPCs are at specific interactable objects.
     void OnTriggerEnter(Collider otherCollider)
     {
         if (otherCollider.tag == "RestItems")
@@ -260,6 +285,8 @@ public class NPCBehaviors : MonoBehaviour {
             state.atQuest = true;
         else if (otherCollider.tag == "Exit")
             state.atExit = true;
+        else if (otherCollider.tag == "IdleActivity")
+            state.atIdleActivity = true;
     }
 
     void OnTriggerExit(Collider otherCollider)
@@ -272,8 +299,9 @@ public class NPCBehaviors : MonoBehaviour {
             state.atQuest = false;
         else if (otherCollider.tag == "Exit")
             state.atExit = false;
+        else if (otherCollider.tag == "IdleActivity")
+            state.atIdleActivity = false;
     }
-
 
     void KillNPC()
     {

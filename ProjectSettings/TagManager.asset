@@ -9,6 +9,7 @@ TagManager:
   - TableItems
   - QuestGiver
   - Exit
+  - IdleActivity
   layers:
   - Default
   - TransparentFX

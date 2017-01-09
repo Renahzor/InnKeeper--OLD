@@ -56,6 +56,9 @@ public class Adventurer : MonoBehaviour {
                 case StateTracker.States.WantsFood:
                     StartCoroutine(behaviors.MoveToTable());
                     break;
+                case StateTracker.States.Idle:
+                    StartCoroutine(behaviors.IdleAction());
+                    break;
                 default: break;   
             }
         }

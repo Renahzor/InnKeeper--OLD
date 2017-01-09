@@ -7,7 +7,6 @@ using System;
 public class QuestWindowController : MonoBehaviour
 {
     public QuestManager questManager;
-
     //Quest Window Display Elements for access to change display
     public Dropdown questObjectiveDropdown;
     public Dropdown questLocationDropdown;
@@ -56,9 +55,17 @@ public class QuestWindowController : MonoBehaviour
 
         ActiveQuestManager am = GameObject.Find("GameMaster").GetComponent<ActiveQuestManager>();
 
-        if (am)
+        Quest newQuest = new Quest(questLocationDropdown.value, questObjectiveDropdown.value, Int32.Parse(rewardInput.text.ToString()));
+
+        if (am && !am.IsDuplicateQuest(newQuest))
         {
-            am.AddQuest(new Quest(questLocationDropdown.value, questObjectiveDropdown.value, Int32.Parse(rewardInput.text.ToString())));
+            am.AddQuest(newQuest);
+        }
+
+        else
+        {
+            Debug.Log("Duplicate quest exists");
+            return;
         }
     }
 }

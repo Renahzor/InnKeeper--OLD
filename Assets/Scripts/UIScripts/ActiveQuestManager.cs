@@ -20,4 +20,13 @@ public class ActiveQuestManager : MonoBehaviour {
 
         activeQuests.Add(q, t);
     }
+
+    public bool IsDuplicateQuest(Quest q)
+    {
+        foreach (Quest temp in activeQuests.Keys)
+            if (temp.locationIndex == q.locationIndex && temp.objectiveIndex == q.objectiveIndex && temp.goldReward == q.goldReward)
+                return true;
+
+        return false;
+    }
 }
