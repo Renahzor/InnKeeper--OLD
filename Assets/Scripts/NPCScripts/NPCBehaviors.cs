@@ -246,7 +246,7 @@ public class NPCBehaviors : MonoBehaviour {
             }
             yield return null;
         }
-
+        state.ResetState();
         state.hasActivity = false;
     }
 
@@ -295,12 +295,14 @@ public class NPCBehaviors : MonoBehaviour {
     //state modification for colliders, detects when NPCs are at specific interactable objects.
     void OnTriggerEnter(Collider otherCollider)
     {
-        state.objectCurrentlyTouching = otherCollider.gameObject;
+        if (otherCollider.tag != "NPC")
+            state.objectCurrentlyTouching = otherCollider.gameObject;
     }
 
     void OnTriggerExit(Collider otherCollider)
     {
-        state.objectCurrentlyTouching = null;
+        if (otherCollider.tag != "NPC")
+            state.objectCurrentlyTouching = null;
     }
 
     void KillNPC()

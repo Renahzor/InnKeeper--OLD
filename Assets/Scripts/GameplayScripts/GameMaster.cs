@@ -17,6 +17,7 @@ public class GameMaster : MonoBehaviour {
     Adventurer selectedAdventurer = null;
 
     QuestManager questManager;
+    public NPCNames names = new NPCNames();
 
     public int questsCompleted = 0;
     public int innRating = 10;
@@ -87,5 +88,17 @@ public class GameMaster : MonoBehaviour {
     {
         deceasedAdventurers.Add(a);
         ActiveHeroPanel.Instance.RemoveHero(a);
+    }
+}
+
+public class NPCNames
+{
+    string[] firstNamesMale = new string[] { "Malestrom", "Lassie", "Mattisen", "Arkonios", "Dojima", "Denae", "Sturm","Gerald",
+                                            "Pyra", "Guntar", "Renahzor", "Snarky", "Kortice", "Ingvar","Vimak","Georg","Breunor","Ruben", "Aigis", "Wulfgar",
+                                            "Jonathan","Theodin", "Brukhar"};
+
+    public string GetName()
+    {
+        return firstNamesMale[UnityEngine.Random.Range(0, firstNamesMale.Length)];
     }
 }

@@ -36,7 +36,7 @@ public class AdventurerStats : MonoBehaviour {
         statsList.Add("Gold: " + gold);
     }
 
-    public void SetStats(int _level)
+    public void SetStats(int _level, string name)
     {
         profession = (Profession)UnityEngine.Random.Range(0, Enum.GetValues(typeof(Profession)).Length);
         race = (Race)UnityEngine.Random.Range(0, Enum.GetValues(typeof(Race)).Length);
@@ -51,7 +51,7 @@ public class AdventurerStats : MonoBehaviour {
         maxDamage = 5;
         exp = 0;
         gold = 2;
-        advName = "Random Dude";
+        advName = name;
         UpdateStatList();
 
         levelUpExp = 100;

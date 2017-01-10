@@ -22,7 +22,7 @@ public class Adventurer : MonoBehaviour {
     void NewAdventurer(int _level)
     {
         stats = GetComponent<AdventurerStats>();
-        stats.SetStats(_level);
+        stats.SetStats(_level, GameMaster.Instance.names.GetName());
         state = GetComponent<StateTracker>();
         behaviors = GetComponent<NPCBehaviors>();
         needs = GetComponent<AdventurerNeeds>();
