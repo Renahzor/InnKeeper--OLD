@@ -32,15 +32,25 @@ public class OrderLedger : MonoBehaviour
         if (InventoryMaster.Instance.inventoryTracker.ContainsKey(o.itemIndex) &&  InventoryMaster.Instance.inventoryTracker[o.itemIndex] >= o.quantity)
         {
             InventoryMaster.Instance.inventoryTracker[o.itemIndex] -= o.quantity;
-            Player player = GameObject.Find("PlayerTest").GetComponent<Player>();
+            
 
-            player.playerGold += o.paymentValue;
-            player.UpdateGoldDisplay();
+            Player.Instance.playerGold += o.paymentValue;
+            Player.Instance.UpdateGoldDisplay();
 
             InventoryMaster.Instance.UpdateInventoryQuantity(o.itemIndex);
         }
 
         else 
             Debug.Log("Not Enough Items");
+    }
+
+    public void AddNewOrder(Order o)
+    {
+        orders.Add(o);
+        var le = Instantiate(ledgerElement);
+        le.transform.SetParent(ledgerPanel.transform, false);
+
+        le.GetComponentInChildren<Text>().text = o.orderDescription + "\n Qty: " + o.quantity + " Payment: " + o.paymentValue + " Gold";
+        le.GetComponent<Button>().onClick.AddListener(() => ExecuteOrder(o));
     }
 }

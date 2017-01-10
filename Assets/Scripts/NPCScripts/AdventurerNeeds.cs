@@ -12,10 +12,10 @@ public class AdventurerNeeds : MonoBehaviour {
         questNeed = Random.Range(70f, 100f);
         socialNeed = Random.Range(70f, 100f);
 
-        foodRate = -0.1f;
-        drinkRate = -0.1f;
-        questRate = -0.1f;
-        socialRate = -0.1f;
+        foodRate = -0.05f;
+        drinkRate = -0.05f;
+        questRate = -0.05f;
+        socialRate = -0.05f;
     }
 
 	// Update is called once per frame
@@ -36,9 +36,9 @@ public class AdventurerNeeds : MonoBehaviour {
 
     public void ResetRates()
     {
-        foodRate = -0.1f;
-        drinkRate = -0.1f;
-        questRate = -0.1f;
-        socialRate = -0.1f;
+        foodRate = -0.05f;
+        drinkRate = -0.05f;
+        questRate = -0.05f;
+        socialRate = -0.05f;
     }
 }

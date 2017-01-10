@@ -11,6 +11,7 @@ public class GameMaster : MonoBehaviour {
     [SerializeField]
     GameObject adventurerPrefab, questWindow, inventoryWindow, activeAdventurerWindow, ledgerWindow, activeQuestWindow;
     List<Adventurer> deceasedAdventurers = new List<Adventurer>();
+    public List<GameObject> restObjectsInScene;
 
     //Generic Display Elements
     public Text npcNameDisplay;
@@ -20,13 +21,14 @@ public class GameMaster : MonoBehaviour {
     public NPCNames names = new NPCNames();
 
     public int questsCompleted = 0;
+    int questsForNextLevel = 10;
     public int innRating = 10;
 
     void Awake()
     {
         Instance = this;
 
-        for (int i = 0; i <= 5; i++)
+        for (int i = 0; i <= 8; i++)
         {
             var adv = Instantiate(adventurerPrefab);
             activeAdventurerWindow.GetComponent<ActiveHeroPanel>().AddHero(adv.GetComponent<Adventurer>());
@@ -38,6 +40,7 @@ public class GameMaster : MonoBehaviour {
     {
         questWindow.SetActive(false);
         questManager = GetComponent<QuestManager>();
+        restObjectsInScene = new List<GameObject>(GameObject.FindGameObjectsWithTag("RestItems"));
     }
 
     void Update()
@@ -78,9 +81,10 @@ public class GameMaster : MonoBehaviour {
             }
         }
 
-        if (questsCompleted == 10)
+        if (questsCompleted == questsForNextLevel)
         {
             questManager.IncreaseQuestLevel();
+            questsForNextLevel *= 2;
         }
     }
 

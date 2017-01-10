@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections;
 using UnityEngine.UI;
 
-//move AI behaviors here
+//AI behavior routines.
 public class NPCBehaviors : MonoBehaviour {
 
     public enum InteractableObjects { Bed, QuestMarker, Exit, Bar, Table, IdleActivity }
@@ -69,6 +69,7 @@ public class NPCBehaviors : MonoBehaviour {
         }
 
         this.gameObject.GetComponent<Renderer>().enabled = false;
+        needs.SetNeedRates(-1.0f, -0.15f, 0.75f, -0.25f);
 
         while (travelTime >= 0.0f)
         {
@@ -78,7 +79,7 @@ public class NPCBehaviors : MonoBehaviour {
             yield return null;
         }
 
-        needs.SetNeedRates(-0.5f, -0.5f, 0.75f, -0.25f);
+        needs.SetNeedRates(-1.0f, -0.15f, 2.0f, -0.25f);
 
         state.advActivity = "Fighting!";
         state.activityTime = 0.0f;
@@ -168,7 +169,22 @@ public class NPCBehaviors : MonoBehaviour {
         switch (target)
         {
             case InteractableObjects.Bed:
-                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("RestItems"));                
+                possibleTargets = new List<GameObject>(GameMaster.Instance.restObjectsInScene);
+                for (int i = possibleTargets.Count - 1; i >= 0; i--)
+                {
+                    BedScript bed = possibleTargets[i].GetComponent<BedScript>();
+                    if (bed.occupied == true || bed.goldCost > stats.gold)
+                    {
+                        possibleTargets.Remove(possibleTargets[i]);
+                    }
+                }
+                if (possibleTargets.Count == 0)
+                {
+                    Debug.Log("Out of Beds or available beds too expensive for Hero " + stats.advName);
+                    state.ResetState();
+                    state.hasActivity = false;
+                    yield break;
+                }
                 break;
             case InteractableObjects.Exit:
                 possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("ExitPath"));                
@@ -186,7 +202,7 @@ public class NPCBehaviors : MonoBehaviour {
                 break;
         }
 
-        targetSelected = SelectTrarget(possibleTargets);
+        targetSelected = SelectTrarget(possibleTargets, target);
 
         if (targetSelected != null)
         {
@@ -202,7 +218,7 @@ public class NPCBehaviors : MonoBehaviour {
         switch (target)
         {
             case InteractableObjects.Bed:
-                StartCoroutine(Sleep());
+                StartCoroutine(Sleep(targetSelected));
                 break;
             case InteractableObjects.Table:
                 StartCoroutine(Eat());
@@ -212,16 +228,27 @@ public class NPCBehaviors : MonoBehaviour {
                     StartCoroutine(RunQuest(q));
                 break;
             case InteractableObjects.IdleActivity:
+                state.advActivity = "Idle Activity";
+                state.activityTime = 0.0f;
                 state.hasActivity = false;
+                needs.SetNeedRates(-0.1f, -0.05f, -0.8f, 1.5f);
                 break;
             default: break;
         }
+        ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
     }
 
-    GameObject SelectTrarget(List<GameObject> possibleTargets)
+    GameObject SelectTrarget(List<GameObject> possibleTargets, InteractableObjects intendedTarget)
     {
         if (possibleTargets != null)
-            return possibleTargets[Random.Range(0, possibleTargets.Count)];
+        {
+            int randomIndex = Random.Range(0, possibleTargets.Count);
+            if (possibleTargets[randomIndex].GetComponent<BedScript>())
+            {
+                possibleTargets[randomIndex].GetComponent<BedScript>().occupied = true;
+            }
+            return possibleTargets[randomIndex];
+        }
 
         else return null;
     }
@@ -232,9 +259,16 @@ public class NPCBehaviors : MonoBehaviour {
     }
 
     //activity routines
-    IEnumerator Sleep()
+    IEnumerator Sleep(GameObject bed)
     {
-        float healTimer = 3.0f;
+        state.advActivity = "Sleeping";
+        state.activityTime = 0.0f;
+        BedScript temp = bed.GetComponent<BedScript>();
+        stats.gold -= temp.goldCost;
+        Player.Instance.playerGold += temp.goldCost;
+        Player.Instance.UpdateGoldDisplay();
+        Debug.Log("Paid for bed");
+        float healTimer = 60 / temp.sleepRate;
         while (stats.HP < stats.maxHP)
         {
             healTimer -= Time.deltaTime;
@@ -242,17 +276,20 @@ public class NPCBehaviors : MonoBehaviour {
             {
                 stats.HP = Mathf.Clamp(stats.HP += stats.toughness, 0, stats.maxHP);
                 ChangeHeroHealthDisplay();
-                healTimer = 3.0f;
+                healTimer = 60 / temp.sleepRate;
             }
             yield return null;
         }
         state.ResetState();
         state.hasActivity = false;
+        temp.occupied = false;
     }
 
     IEnumerator Eat()
     {
-        needs.SetNeedRates(2.0f, 0.25f, -0.25f, -0.25f);
+        state.advActivity = "Eating";
+        state.activityTime = 0.0f;
+        needs.SetNeedRates(3.0f, 0.4f, -0.2f, -0.2f);
         while (needs.foodNeed < 100.0f)
         {
             yield return null;
@@ -272,18 +309,20 @@ public class NPCBehaviors : MonoBehaviour {
 
         else
         {
-            Player p = GameObject.Find("PlayerTest").GetComponent<Player>();
             InventoryMaster.Instance.AddItem(q.objectiveIndex, numberDefeated);
 
-            p.playerGold -= q.goldReward;
-            stats.gold += q.goldReward;
+            if (numberDefeated > 0)
+            {
+                Player.Instance.playerGold -= q.goldReward;
+                stats.gold += q.goldReward;
+            }
             this.gameObject.GetComponent<Renderer>().enabled = true;
 
             //spawn point
             gameObject.transform.position = new Vector3(-7, -4.4f, -0.1f);           
 
             state.currentQuest = null;
-            p.UpdateGoldDisplay();
+            Player.Instance.UpdateGoldDisplay();
             state.advActivity = "Relaxing..";
             state.activityTime = 0.0f;
             state.hasActivity = false;

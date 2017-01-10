@@ -46,7 +46,10 @@ public class QuestManager : MonoBehaviour {
         {
             case 2:
                 questLocationsList.Add("Old Mill");
+                break;
+            case 3:
                 questObjectivesList.Add("Ogre Knuckles");
+                GameObject.Find("GameMaster").GetComponent<OrderLedger>().AddNewOrder(new Order("Ogre Knuckles Wanted", "Bring us some Ogre Knuckles", 8, 23, 1));
                 break;
             default:
                 break;
