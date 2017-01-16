@@ -28,7 +28,7 @@ public class GameMaster : MonoBehaviour {
     {
         Instance = this;
 
-        for (int i = 0; i <= 8; i++)
+        for (int i = 0; i <= 5; i++)
         {
             var adv = Instantiate(adventurerPrefab);
             activeAdventurerWindow.GetComponent<ActiveHeroPanel>().AddHero(adv.GetComponent<Adventurer>());
