@@ -23,6 +23,7 @@ GameObject:
   - component: {fileID: 65366749765013110}
   - component: {fileID: 23008632308334198}
   - component: {fileID: 114250225885349898}
+  - component: {fileID: 114517925112119166}
   m_Layer: 0
   m_Name: GenericBed
   m_TagString: RestItems
@@ -107,3 +108,15 @@ MonoBehaviour:
   goldCost: 1
   occupied: 0
   sleepRate: 10
+--- !u!114 &114517925112119166
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1308079770295590}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0bd48e55e4c3d241a8342bf68f10824, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  buildCost: 25

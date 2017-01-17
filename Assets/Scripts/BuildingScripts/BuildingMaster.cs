@@ -37,7 +37,11 @@ public class BuildingMaster : MonoBehaviour {
         {
             if (Input.GetMouseButtonDown(0))
             {
-                //check for purchase of item here
+                Player.Instance.playerGold -= item.GetComponent<BuildableObject>().buildCost;
+                Player.Instance.UpdateGoldDisplay();
+
+                if (item.GetComponent<BedScript>())
+                    GameMaster.Instance.restObjectsInScene.Add(item);
                 building = false;
             }
 
@@ -51,12 +55,9 @@ public class BuildingMaster : MonoBehaviour {
                 {
                     item.transform.position = new Vector3(hit.point.x, hit.point.y, 0);
                 }
-
                 else
-                    item.transform.position = previousPosition;
-                
+                    item.transform.position = previousPosition;   
             }
-
             yield return null;
         }
     }
