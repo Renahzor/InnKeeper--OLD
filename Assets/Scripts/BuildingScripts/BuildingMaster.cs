@@ -33,16 +33,31 @@ public class BuildingMaster : MonoBehaviour {
     {
         bool building = true;
 
+        //if the mouse button is held over from clicking the button, wait for it to be released.
+        while (Input.GetMouseButton(0))
+            yield return null;
+
         while (building)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                Player.Instance.playerGold -= item.GetComponent<BuildableObject>().buildCost;
-                Player.Instance.UpdateGoldDisplay();
+                if (Player.Instance.playerGold < item.GetComponent<BuildableObject>().buildCost)
+                {
+                    Destroy(item);
+                    Debug.Log("Not enugh gold to build");
+                    building = false;
+                    yield break;
+                }
 
-                if (item.GetComponent<BedScript>())
-                    GameMaster.Instance.restObjectsInScene.Add(item);
-                building = false;
+                else
+                {
+                    Player.Instance.playerGold -= item.GetComponent<BuildableObject>().buildCost;
+                    Player.Instance.UpdateGoldDisplay();
+
+                    if (item.GetComponent<BedScript>())
+                        GameMaster.Instance.restObjectsInScene.Add(item);
+                    building = false;
+                }
             }
 
             else
