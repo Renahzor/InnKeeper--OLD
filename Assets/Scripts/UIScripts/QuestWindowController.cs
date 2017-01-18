@@ -11,6 +11,7 @@ public class QuestWindowController : MonoBehaviour
     public Dropdown questObjectiveDropdown;
     public Dropdown questLocationDropdown;
     public InputField rewardInput;
+    public QuestItemScript questHolder = null;
 
     int questLevel = 1;
 
@@ -40,6 +41,19 @@ public class QuestWindowController : MonoBehaviour
 
     public void CreateQuest()
     {
+
+        if (questHolder == null)
+        {
+            Debug.Log("Quest Board Not present, something went very wrong...");
+            return;
+        }
+        
+        if (!questHolder.HasRoomForQuest())
+        {
+            Debug.Log("Quest Board is full");
+            return;
+        }
+
         if (questObjectiveDropdown.value == -1 || questLocationDropdown.value == -1)
         {
             Debug.Log("SELECT OPTIONS");
@@ -60,6 +74,7 @@ public class QuestWindowController : MonoBehaviour
         if (am && !am.IsDuplicateQuest(newQuest))
         {
             am.AddQuest(newQuest);
+            questHolder.AddQuest(newQuest);
         }
 
         else

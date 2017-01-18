@@ -50,10 +50,7 @@ public class GameMaster : MonoBehaviour {
     }
 
     void Update()
-    {
-        if (Input.GetKeyDown("q"))
-            questWindow.SetActive(!questWindow.activeSelf);
-        
+    {        
         if (Input.GetKeyDown("i"))
             inventoryWindow.SetActive(!inventoryWindow.activeSelf);
 
@@ -78,12 +75,23 @@ public class GameMaster : MonoBehaviour {
                     selectedAdventurer = hit.transform.GetComponent<Adventurer>();
                     npcNameDisplay.text = "Character: " + selectedAdventurer.gameObject.GetComponent<AdventurerStats>().advName;
                 }
-            }
 
+                else if (hit.transform.tag == "QuestGiver")
+                {
+                    questWindow.SetActive(true);
+                    questWindow.GetComponent<QuestWindowController>().questHolder = hit.transform.GetComponent<QuestItemScript>();
+                }
+            }
+            //TODO fix this
             else
             {
                 npcNameDisplay.text = "Character: None";
                 selectedAdventurer = null;
+                if (questWindow.activeSelf)
+                {
+                    questWindow.GetComponent<QuestWindowController>().questHolder = null;
+                    questWindow.SetActive(false);
+                }
             }
         }
 

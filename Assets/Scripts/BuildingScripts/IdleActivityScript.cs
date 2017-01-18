@@ -4,13 +4,7 @@ using UnityEngine;
 
 public class IdleActivityScript : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    int activityDuration;
+    string activityName;
+
 }
