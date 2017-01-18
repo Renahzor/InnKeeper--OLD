@@ -55,7 +55,7 @@ public class BuildingMaster : MonoBehaviour {
                     Player.Instance.UpdateGoldDisplay();
 
                     if (item.GetComponent<BedScript>())
-                        GameMaster.Instance.restObjectsInScene.Add(item);
+                        GameMaster.Instance.RestObjects.Add(item);
                     building = false;
                 }
             }

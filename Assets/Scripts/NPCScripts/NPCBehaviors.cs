@@ -169,7 +169,7 @@ public class NPCBehaviors : MonoBehaviour {
         switch (target)
         {
             case InteractableObjects.Bed:
-                possibleTargets = new List<GameObject>(GameMaster.Instance.restObjectsInScene);
+                possibleTargets = new List<GameObject>(GameMaster.Instance.RestObjects);
                 for (int i = possibleTargets.Count - 1; i >= 0; i--)
                 {
                     BedScript bed = possibleTargets[i].GetComponent<BedScript>();
@@ -190,13 +190,13 @@ public class NPCBehaviors : MonoBehaviour {
                 possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("ExitPath"));                
                 break;
             case InteractableObjects.QuestMarker:
-                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("QuestGiver"));                
+                possibleTargets = new List<GameObject>(GameMaster.Instance.QuestObjects);                
                 break;
             case InteractableObjects.IdleActivity:
-                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("IdleActivity"));                
+                possibleTargets = new List<GameObject>(GameMaster.Instance.IdleObjects);                
                 break;
             case InteractableObjects.Table:
-                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("TableItems"));                
+                possibleTargets = new List<GameObject>(GameMaster.Instance.TableObjects);
                 break;
             default:
                 break;

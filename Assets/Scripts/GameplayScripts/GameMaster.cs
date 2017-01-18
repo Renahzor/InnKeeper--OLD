@@ -11,7 +11,10 @@ public class GameMaster : MonoBehaviour {
     [SerializeField]
     GameObject adventurerPrefab, questWindow, inventoryWindow, activeAdventurerWindow, ledgerWindow, activeQuestWindow;
     List<Adventurer> deceasedAdventurers = new List<Adventurer>();
-    public List<GameObject> restObjectsInScene;
+    public List<GameObject> RestObjects;
+    public List<GameObject> QuestObjects;
+    public List<GameObject> IdleObjects;
+    public List<GameObject> TableObjects;
 
     //Generic Display Elements
     public Text npcNameDisplay;
@@ -40,7 +43,10 @@ public class GameMaster : MonoBehaviour {
     {
         questWindow.SetActive(false);
         questManager = GetComponent<QuestManager>();
-        restObjectsInScene = new List<GameObject>(GameObject.FindGameObjectsWithTag("RestItems"));
+        RestObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("RestItems"));
+        QuestObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("QuestGiver"));
+        IdleObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("IdleActivity"));
+        TableObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("TableItems"));
     }
 
     void Update()
