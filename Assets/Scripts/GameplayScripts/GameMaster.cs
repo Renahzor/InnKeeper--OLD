@@ -87,11 +87,6 @@ public class GameMaster : MonoBehaviour {
             {
                 npcNameDisplay.text = "Character: None";
                 selectedAdventurer = null;
-                if (questWindow.activeSelf)
-                {
-                    questWindow.GetComponent<QuestWindowController>().questHolder = null;
-                    questWindow.SetActive(false);
-                }
             }
         }
 

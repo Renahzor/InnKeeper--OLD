@@ -166,6 +166,7 @@ public class NPCBehaviors : MonoBehaviour {
         List<GameObject> possibleTargets = new List<GameObject>();
         state.hasActivity = true;
 
+        //check what kind of target we're looking for and narrow down out targets
         switch (target)
         {
             case InteractableObjects.Bed:
@@ -190,7 +191,12 @@ public class NPCBehaviors : MonoBehaviour {
                 possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("ExitPath"));                
                 break;
             case InteractableObjects.QuestMarker:
-                possibleTargets = new List<GameObject>(GameMaster.Instance.QuestObjects);                
+                possibleTargets = new List<GameObject>(GameMaster.Instance.QuestObjects);
+                for (int i = possibleTargets.Count - 1; i >= 0; i--)
+                {
+                    if (!possibleTargets[i].GetComponent<QuestItemScript>().ContainsQuest(q))
+                        possibleTargets.Remove(possibleTargets[i]);
+                }
                 break;
             case InteractableObjects.IdleActivity:
                 possibleTargets = new List<GameObject>(GameMaster.Instance.IdleObjects);                
@@ -215,6 +221,7 @@ public class NPCBehaviors : MonoBehaviour {
 
         else { Debug.Log("No Target of type selected: MoveTo() failed"); }
 
+        //after selecting a specific target and moving to it, start the proper coroutine for that type of object
         switch (target)
         {
             case InteractableObjects.Bed:
@@ -238,6 +245,7 @@ public class NPCBehaviors : MonoBehaviour {
         ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
     }
 
+    //Trims a list of targets based on specific target types
     GameObject SelectTrarget(List<GameObject> possibleTargets, InteractableObjects intendedTarget)
     {
         if (possibleTargets != null)

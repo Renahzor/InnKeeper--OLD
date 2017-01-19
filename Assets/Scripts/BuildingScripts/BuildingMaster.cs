@@ -56,6 +56,13 @@ public class BuildingMaster : MonoBehaviour {
 
                     if (item.GetComponent<BedScript>())
                         GameMaster.Instance.RestObjects.Add(item);
+
+                    if (item.GetComponent<QuestItemScript>())
+                        GameMaster.Instance.QuestObjects.Add(item);
+
+                    if (item.GetComponent<IdleActivityScript>())
+                        GameMaster.Instance.IdleObjects.Add(item);
+
                     building = false;
                 }
             }

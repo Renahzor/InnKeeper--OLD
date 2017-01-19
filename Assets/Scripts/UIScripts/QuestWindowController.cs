@@ -19,6 +19,13 @@ public class QuestWindowController : MonoBehaviour
     {
         UpdateDropdownText(questLocationDropdown, questManager.questLocationsList);
         UpdateDropdownText(questObjectiveDropdown, questManager.questObjectivesList);
+
+        questLocationDropdown.value = -1;
+        questLocationDropdown.captionText.text = "Select One...";
+
+        questObjectiveDropdown.value = -1;
+        questObjectiveDropdown.captionText.text = "Select One...";
+
     }
 
     void Update()
@@ -36,7 +43,6 @@ public class QuestWindowController : MonoBehaviour
         d.ClearOptions();
         d.AddOptions(list);
         d.RefreshShownValue();
-        d.captionText.text = "Select One...";
     }
 
     public void CreateQuest()
@@ -82,5 +88,11 @@ public class QuestWindowController : MonoBehaviour
             Debug.Log("Duplicate quest exists");
             return;
         }
+    }
+
+    public void CloseWindow()
+    {
+        questHolder = null;
+        this.gameObject.SetActive(false);
     }
 }
