@@ -25,22 +25,24 @@ public class GameMaster : MonoBehaviour {
 
     public int questsCompleted = 0;
     int questsForNextLevel = 10;
-    public int innRating = 10;
+    public int innRating = 20;
+
+    float npcSpawnDelay;
 
     void Awake()
     {
         Instance = this;
 
-        for (int i = 0; i <= 5; i++)
+        for (int i = 0; i <= 3; i++)
         {
-            var adv = Instantiate(adventurerPrefab);
-            activeAdventurerWindow.GetComponent<ActiveHeroPanel>().AddHero(adv.GetComponent<Adventurer>());
-            adv.GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+            SpawnNewHero();
         }
     }
 
     void Start()
     {
+        npcSpawnDelay = UnityEngine.Random.Range(60.0f, 300.0f);
+
         questWindow.SetActive(false);
         questManager = GetComponent<QuestManager>();
         RestObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("RestItems"));
@@ -82,7 +84,7 @@ public class GameMaster : MonoBehaviour {
                     questWindow.GetComponent<QuestWindowController>().questHolder = hit.transform.GetComponent<QuestItemScript>();
                 }
             }
-            //TODO fix this
+            
             else
             {
                 npcNameDisplay.text = "Character: None";
@@ -95,12 +97,29 @@ public class GameMaster : MonoBehaviour {
             questManager.IncreaseQuestLevel();
             questsForNextLevel *= 2;
         }
+
+        //spawn more NPCs based on total inn rating.
+        npcSpawnDelay -= Time.deltaTime;
+        if (npcSpawnDelay <= 0.0f)
+        {
+            if (ActiveHeroPanel.Instance.NumberOfHeroesActive() < innRating / 3)
+                SpawnNewHero();
+
+            else npcSpawnDelay = UnityEngine.Random.Range(60.0f, 300.0f);
+        }
     }
 
     public void KillAdventurer(Adventurer a)
     {
         deceasedAdventurers.Add(a);
         ActiveHeroPanel.Instance.RemoveHero(a);
+    }
+
+    public void SpawnNewHero()
+    {
+        var adv = Instantiate(adventurerPrefab);
+        activeAdventurerWindow.GetComponent<ActiveHeroPanel>().AddHero(adv.GetComponent<Adventurer>());
+        adv.GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
     }
 }
 

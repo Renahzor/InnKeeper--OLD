@@ -26,6 +26,7 @@ public class Adventurer : MonoBehaviour {
         state = GetComponent<StateTracker>();
         behaviors = GetComponent<NPCBehaviors>();
         needs = GetComponent<AdventurerNeeds>();
+        CheckStateImmediate();
     }
 
     void Update()
@@ -62,5 +63,11 @@ public class Adventurer : MonoBehaviour {
                 default: break;   
             }
         }
+    }
+
+    public void CheckStateImmediate()
+    {
+        state.UpdateState(GetComponent<AdventurerNeeds>());
+        stateCheckCooldown = 5.0f;
     }
 }

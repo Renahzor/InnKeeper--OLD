@@ -935,6 +935,7 @@ GameObject:
   - component: {fileID: 107879811}
   - component: {fileID: 107879810}
   - component: {fileID: 107879809}
+  - component: {fileID: 107879813}
   m_Layer: 0
   m_Name: IdleActivity
   m_TagString: IdleActivity
@@ -1005,6 +1006,20 @@ Transform:
   m_Father: {fileID: 2029491887}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &107879813
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 107879808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff98b74895ec0564683d9913b20c7c94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activityDuration: 10
+  activityName: Playing Darts
+  activityCost: 2
 --- !u!1 &114242966
 GameObject:
   m_ObjectHideFlags: 0
@@ -2835,52 +2850,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 592511399}
---- !u!1001 &603079272
-Prefab:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 2029491887}
-    m_Modifications:
-    - target: {fileID: 4951987258317308, guid: 5392c18fd54cd7141a00e0a466aa532d, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: 4.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4951987258317308, guid: 5392c18fd54cd7141a00e0a466aa532d, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -4.24
-      objectReference: {fileID: 0}
-    - target: {fileID: 4951987258317308, guid: 5392c18fd54cd7141a00e0a466aa532d, type: 2}
-      propertyPath: m_LocalPosition.z
-      value: -90.09
-      objectReference: {fileID: 0}
-    - target: {fileID: 4951987258317308, guid: 5392c18fd54cd7141a00e0a466aa532d, type: 2}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4951987258317308, guid: 5392c18fd54cd7141a00e0a466aa532d, type: 2}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4951987258317308, guid: 5392c18fd54cd7141a00e0a466aa532d, type: 2}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4951987258317308, guid: 5392c18fd54cd7141a00e0a466aa532d, type: 2}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4951987258317308, guid: 5392c18fd54cd7141a00e0a466aa532d, type: 2}
-      propertyPath: m_RootOrder
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 1116171745719570, guid: 5392c18fd54cd7141a00e0a466aa532d, type: 2}
-      propertyPath: m_Name
-      value: QuestBoard (1)
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_ParentPrefab: {fileID: 100100000, guid: 5392c18fd54cd7141a00e0a466aa532d, type: 2}
-  m_IsPrefabParent: 0
 --- !u!1 &608762327
 GameObject:
   m_ObjectHideFlags: 0
@@ -5308,7 +5277,7 @@ MonoBehaviour:
   TableObjects: []
   npcNameDisplay: {fileID: 798783754}
   questsCompleted: 0
-  innRating: 10
+  innRating: 20
 --- !u!114 &1477069468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5581,6 +5550,7 @@ GameObject:
   - component: {fileID: 1562304789}
   - component: {fileID: 1562304788}
   - component: {fileID: 1562304787}
+  - component: {fileID: 1562304790}
   m_Layer: 0
   m_Name: IdleActivity (2)
   m_TagString: IdleActivity
@@ -5651,6 +5621,20 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1562304785}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!114 &1562304790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1562304785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff98b74895ec0564683d9913b20c7c94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  activityDuration: 5
+  activityName: Liar's Dice
+  activityCost: 1
 --- !u!1 &1577922962
 GameObject:
   m_ObjectHideFlags: 0
@@ -5940,11 +5924,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1599442422}
---- !u!4 &1682920290 stripped
-Transform:
-  m_PrefabParentObject: {fileID: 4951987258317308, guid: 5392c18fd54cd7141a00e0a466aa532d,
-    type: 2}
-  m_PrefabInternal: {fileID: 603079272}
 --- !u!1 &1707775476
 GameObject:
   m_ObjectHideFlags: 0
@@ -6305,7 +6284,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1794518932
 RectTransform:
   m_ObjectHideFlags: 0
@@ -7042,7 +7021,6 @@ Transform:
   - {fileID: 107879812}
   - {fileID: 1562304786}
   - {fileID: 72280062}
-  - {fileID: 1682920290}
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

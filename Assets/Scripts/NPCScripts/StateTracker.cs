@@ -55,5 +55,7 @@ public class StateTracker : MonoBehaviour{
     public void ResetState()
     {
         state = States.Idle;
+        advActivity = "Looking For Activity";
+        activityTime = 0.0f;
     }
 }

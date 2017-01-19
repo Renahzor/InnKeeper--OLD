@@ -235,10 +235,8 @@ public class NPCBehaviors : MonoBehaviour {
                     StartCoroutine(RunQuest(q));
                 break;
             case InteractableObjects.IdleActivity:
-                state.advActivity = "Idle Activity";
-                state.activityTime = 0.0f;
-                state.hasActivity = false;
                 needs.SetNeedRates(-0.1f, -0.05f, -0.8f, 1.5f);
+                StartCoroutine(IdleActivity(targetSelected.GetComponent<IdleActivityScript>()));
                 break;
             default: break;
         }
@@ -267,6 +265,25 @@ public class NPCBehaviors : MonoBehaviour {
     }
 
     //activity routines
+    IEnumerator IdleActivity(IdleActivityScript i)
+    {
+        state.hasActivity = true;
+        float timeRemaining = i.activityDuration;
+        state.advActivity = i.activityName;
+        while (timeRemaining > 0.0f)
+        {
+            timeRemaining -= Time.deltaTime;
+            state.activityTime = timeRemaining;
+            ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
+            yield return null;
+        }
+        state.hasActivity = false;
+        needs.ResetRates();
+        state.ResetState();
+        ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
+        GetComponent<Adventurer>().CheckStateImmediate();   
+    }
+
     IEnumerator Sleep(GameObject bed)
     {
         state.advActivity = "Sleeping";
@@ -291,6 +308,8 @@ public class NPCBehaviors : MonoBehaviour {
         state.ResetState();
         state.hasActivity = false;
         temp.occupied = false;
+        GetComponent<Adventurer>().CheckStateImmediate();
+        ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
     }
 
     IEnumerator Eat()
@@ -306,6 +325,8 @@ public class NPCBehaviors : MonoBehaviour {
         needs.ResetRates();
         state.ResetState();
         state.hasActivity = false;
+        GetComponent<Adventurer>().CheckStateImmediate();
+        ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
     }
 
     void CompleteQuest(Quest q, int numberDefeated)

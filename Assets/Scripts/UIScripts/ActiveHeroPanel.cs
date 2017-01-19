@@ -52,4 +52,9 @@ public class ActiveHeroPanel : MonoBehaviour {
             activeHeroes.Remove(a);
         }
     }
+
+    public int NumberOfHeroesActive()
+    {
+        return activeHeroes.Count;
+    }
 }

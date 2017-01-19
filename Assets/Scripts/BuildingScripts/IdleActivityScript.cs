@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class IdleActivityScript : MonoBehaviour {
 
-    int activityDuration;
-    string activityName;
+    public float activityDuration;
+    public string activityName;
+    public int activityCost;
 
 }
