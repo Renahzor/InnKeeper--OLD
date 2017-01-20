@@ -17,6 +17,11 @@ public class StateTracker : MonoBehaviour{
 
     public Quest currentQuest = null;
 
+    void Start()
+    {
+        UpdateState(GetComponent<AdventurerNeeds>());
+    }
+
     public States GetCurrentState()
     {
         return state;
@@ -49,6 +54,11 @@ public class StateTracker : MonoBehaviour{
         {
             state = States.WantsFood;
             tmp = needs.foodNeed;
+        }
+
+        if (state == States.WantsQuest && GameMaster.Instance.GetComponent<ActiveQuestManager>().activeQuests.Count == 0)
+        {
+            state = States.Idle;
         }
     }
 

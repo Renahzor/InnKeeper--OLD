@@ -73,7 +73,7 @@ public class QuestWindowController : MonoBehaviour
                 return;
         }
 
-        ActiveQuestManager am = GameObject.Find("GameMaster").GetComponent<ActiveQuestManager>();
+        ActiveQuestManager am = GameMaster.Instance.GetComponent<ActiveQuestManager>();
 
         Quest newQuest = new Quest(questLocationDropdown.value, questObjectiveDropdown.value, Int32.Parse(rewardInput.text.ToString()));
 

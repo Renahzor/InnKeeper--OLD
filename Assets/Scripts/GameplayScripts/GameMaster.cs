@@ -105,7 +105,7 @@ public class GameMaster : MonoBehaviour {
             if (ActiveHeroPanel.Instance.NumberOfHeroesActive() < innRating / 3)
                 SpawnNewHero();
 
-            else npcSpawnDelay = UnityEngine.Random.Range(60.0f, 300.0f);
+            npcSpawnDelay = UnityEngine.Random.Range(60.0f, 300.0f);
         }
     }
 
