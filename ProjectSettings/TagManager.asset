@@ -10,6 +10,7 @@ TagManager:
   - QuestGiver
   - Exit
   - IdleActivity
+  - Terrain
   layers:
   - Default
   - TransparentFX

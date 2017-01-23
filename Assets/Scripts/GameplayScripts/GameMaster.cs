@@ -67,10 +67,9 @@ public class GameMaster : MonoBehaviour {
 
         if (Input.GetMouseButtonDown(0))
         {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
+            RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
-            if (Physics.Raycast(ray, out hit))
+            if (hit.collider != null)
             {
                 if (hit.transform.tag == "NPC")
                 {
@@ -119,7 +118,7 @@ public class GameMaster : MonoBehaviour {
     {
         var adv = Instantiate(adventurerPrefab);
         activeAdventurerWindow.GetComponent<ActiveHeroPanel>().AddHero(adv.GetComponent<Adventurer>());
-        adv.GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+        adv.GetComponent<Renderer>().material.color = UnityEngine.Random.ColorHSV(0f, 1f, .2f, .5f, 0.5f, 1f);
     }
 }
 

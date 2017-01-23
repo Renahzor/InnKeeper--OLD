@@ -70,15 +70,11 @@ public class BuildingMaster : MonoBehaviour {
             else
             {
                 Vector3 previousPosition = item.transform.position;
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
 
-                if (Physics.Raycast(ray, out hit))
-                {
-                    item.transform.position = new Vector3(hit.point.x, hit.point.y, 0);
-                }
-                else
-                    item.transform.position = previousPosition;   
+                Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                item.transform.position = new Vector3(mousePos.x, mousePos.y, -1f);
+  
             }
             yield return null;
         }

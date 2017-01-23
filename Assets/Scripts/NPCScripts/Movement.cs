@@ -8,6 +8,6 @@ public class Movement : MonoBehaviour {
 	public void MoveTowardTarget(Transform target)
     {
         float step = Time.deltaTime * moveSpeed;
-        transform.position = Vector3.MoveTowards(transform.position, target.position, step);
+        transform.position = Vector2.MoveTowards(transform.position, target.position, step);
     }
 }

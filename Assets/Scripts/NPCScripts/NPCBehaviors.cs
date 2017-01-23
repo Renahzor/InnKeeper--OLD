@@ -348,7 +348,7 @@ public class NPCBehaviors : MonoBehaviour {
             this.gameObject.GetComponent<Renderer>().enabled = true;
 
             //spawn point
-            gameObject.transform.position = new Vector3(-7, -4.4f, -0.1f);           
+            gameObject.transform.position = new Vector3(-7, -4.4f, -0.05f);           
 
             state.currentQuest = null;
             Player.Instance.UpdateGoldDisplay();
@@ -361,21 +361,21 @@ public class NPCBehaviors : MonoBehaviour {
     }
 
     //state modification for colliders, detects when NPCs are at specific interactable objects.
-    void OnTriggerEnter(Collider otherCollider)
+    void OnCollisionEnter2D(Collision2D otherCollider)
     {
-        if (otherCollider.tag != "NPC")
+        if (otherCollider.gameObject.tag != "NPC")
             state.objectCurrentlyTouching = otherCollider.gameObject;
     }
 
-    void OnTriggerExit(Collider otherCollider)
+    void OnCollisionExit2D(Collision2D otherCollider)
     {
-        if (otherCollider.tag != "NPC")
+        if (otherCollider.gameObject.tag != "NPC")
             state.objectCurrentlyTouching = null;
     }
 
     void KillNPC()
     {
         GameMaster.Instance.KillAdventurer(gameObject.GetComponent<Adventurer>());
-        GameObject.Destroy(this);
+        GameObject.Destroy(this.gameObject);
     }
 }
