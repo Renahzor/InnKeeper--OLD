@@ -39,7 +39,7 @@ public class Adventurer : MonoBehaviour {
 
         if (stateCheckCooldown <= 0.0f)
         {
-            state.UpdateState(GetComponent<AdventurerNeeds>());
+            state.UpdateState(needs);
             stateCheckCooldown = 5.0f;
         }
 

@@ -87,7 +87,7 @@ GameObject:
   - component: {fileID: 114074974608119584}
   - component: {fileID: 114020434556774664}
   m_Layer: 0
-  m_Name: Poor_Qual_Bed
+  m_Name: Low Quality Bed
   m_TagString: RestItems
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

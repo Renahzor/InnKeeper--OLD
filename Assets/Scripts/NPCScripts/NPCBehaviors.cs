@@ -4,7 +4,8 @@ using System.Collections;
 using UnityEngine.UI;
 
 //AI behavior routines.
-public class NPCBehaviors : MonoBehaviour {
+public class NPCBehaviors : MonoBehaviour
+{
 
     public enum InteractableObjects { Bed, QuestMarker, Exit, Bar, Table, IdleActivity }
 
@@ -21,7 +22,7 @@ public class NPCBehaviors : MonoBehaviour {
         needs = GetComponent<AdventurerNeeds>();
         stats = GetComponent<AdventurerStats>();
     }
-    
+
     //Routine to select and accept a quest
     public void GetQuest()
     {
@@ -188,7 +189,7 @@ public class NPCBehaviors : MonoBehaviour {
                 }
                 break;
             case InteractableObjects.Exit:
-                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("ExitPath"));                
+                possibleTargets = new List<GameObject>(GameObject.FindGameObjectsWithTag("ExitPath"));
                 break;
             case InteractableObjects.QuestMarker:
                 possibleTargets = new List<GameObject>(GameMaster.Instance.QuestObjects);
@@ -199,7 +200,7 @@ public class NPCBehaviors : MonoBehaviour {
                 }
                 break;
             case InteractableObjects.IdleActivity:
-                possibleTargets = new List<GameObject>(GameMaster.Instance.IdleObjects);                
+                possibleTargets = new List<GameObject>(GameMaster.Instance.IdleObjects);
                 break;
             case InteractableObjects.Table:
                 possibleTargets = new List<GameObject>(GameMaster.Instance.TableObjects);
@@ -281,7 +282,7 @@ public class NPCBehaviors : MonoBehaviour {
         needs.ResetRates();
         state.ResetState();
         ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
-        GetComponent<Adventurer>().CheckStateImmediate();   
+        GetComponent<Adventurer>().CheckStateImmediate();
     }
 
     IEnumerator Sleep(GameObject bed)
@@ -348,7 +349,7 @@ public class NPCBehaviors : MonoBehaviour {
             this.gameObject.GetComponent<Renderer>().enabled = true;
 
             //spawn point
-            gameObject.transform.position = new Vector3(-7, -4.4f, -0.05f);           
+            gameObject.transform.position = new Vector3(-7, -4.4f, -0.05f);
 
             state.currentQuest = null;
             Player.Instance.UpdateGoldDisplay();
@@ -356,7 +357,7 @@ public class NPCBehaviors : MonoBehaviour {
             state.activityTime = 0.0f;
             state.hasActivity = false;
             GameMaster.Instance.questsCompleted++;
-            ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());            
+            ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
         }
     }
 

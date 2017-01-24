@@ -24,7 +24,7 @@ GameObject:
   - component: {fileID: 114737003789921050}
   - component: {fileID: 114479193978071076}
   m_Layer: 0
-  m_Name: signpost
+  m_Name: Broken Quest Board
   m_TagString: QuestGiver
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0bd48e55e4c3d241a8342bf68f10824, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buildCost: 2
+  buildCost: 50
   gridLocked: 0
 --- !u!114 &114737003789921050
 MonoBehaviour:

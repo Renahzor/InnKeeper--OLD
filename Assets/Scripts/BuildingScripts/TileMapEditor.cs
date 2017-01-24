@@ -31,9 +31,9 @@ public class TileMapEditor : MonoBehaviour
                 spriteIDs[x, y] = builder.tileMap[x, y].GetComponent<TerrainTileScript>().spriteIndex;
             }
 
-        Sprite[] sprites = Resources.LoadAll<Sprite>(textureAtlas.name);
+        /*Sprite[] sprites = Resources.LoadAll<Sprite>(textureAtlas.name);
 
-        editorSprites = new List<Sprite>((Sprite[])sprites);
+        editorSprites = new List<Sprite>((Sprite[])sprites);*/
     }
 
     void Update()

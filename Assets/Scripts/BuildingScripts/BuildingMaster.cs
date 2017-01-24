@@ -6,11 +6,43 @@ public class BuildingMaster : MonoBehaviour {
 
     public List<GameObject> panelList = new List<GameObject>();
     public List<GameObject> itemPrefabs = new List<GameObject>();
+
+    public GameObject restItemParent;
+    public GameObject questItemParent;
+    public GameObject wallItemParent;
+
     public GameObject buttonPrefab;
 
     // Use this for initialization
     void Start () {
-        ChangePanelView(0);		
+        ChangePanelView(0);
+
+        int i = 0;
+        foreach (GameObject item in itemPrefabs)
+        {
+            if (item.GetComponent<BedScript>() != null)
+            {
+                bool panelState = restItemParent.activeSelf;
+                restItemParent.SetActive(true);
+
+                var button = Instantiate(buttonPrefab);
+                button.transform.SetParent(restItemParent.transform, false);
+                button.GetComponent<BuildMenuButton>().SetupButton(i);
+                restItemParent.SetActive(panelState);
+            }
+
+            else if (item.GetComponent<QuestItemScript>() != null)
+            {
+                bool panelState = questItemParent.activeSelf;
+                questItemParent.SetActive(true);
+
+                var button = Instantiate(buttonPrefab);
+                button.transform.SetParent(questItemParent.transform, false);
+                button.GetComponent<BuildMenuButton>().SetupButton(i);
+                questItemParent.SetActive(panelState);
+            }
+            i++;
+        }
 	}
 	
     //Changes which panel is active, called by buttons on the UI
