@@ -11,6 +11,7 @@ TagManager:
   - Exit
   - IdleActivity
   - Terrain
+  - DrinkItem
   layers:
   - Default
   - TransparentFX

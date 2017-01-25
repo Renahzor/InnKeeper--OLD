@@ -44,11 +44,11 @@ public class StateTracker : MonoBehaviour{
             tmp = needs.questNeed;
         }
 
-        /*if (needs.drinkNeed < tmp)
+        if (needs.drinkNeed < tmp)
         {
             state = States.WantsDrink;
             tmp = needs.drinkNeed;
-        }*/
+        }
 
         if (needs.foodNeed <= tmp)
         {

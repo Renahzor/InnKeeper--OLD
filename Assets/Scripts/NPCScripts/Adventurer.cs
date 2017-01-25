@@ -61,6 +61,9 @@ public class Adventurer : MonoBehaviour {
                 case StateTracker.States.WantsFood:
                     StartCoroutine(behaviors.MoveTo(NPCBehaviors.InteractableObjects.Table));
                     break;
+                case StateTracker.States.WantsDrink:
+                    StartCoroutine(behaviors.MoveTo(NPCBehaviors.InteractableObjects.Bar));
+                    break;
                 case StateTracker.States.Idle:
                     StartCoroutine(behaviors.MoveTo(NPCBehaviors.InteractableObjects.IdleActivity));
                     break;

@@ -198,6 +198,17 @@ public class NPCBehaviors : MonoBehaviour
                     if (!possibleTargets[i].GetComponent<QuestItemScript>().ContainsQuest(q))
                         possibleTargets.Remove(possibleTargets[i]);
                 }
+
+                if (possibleTargets.Count == 0)
+                {
+                    state.ResetState();
+                    state.advActivity = "None of these quests pay enough!";
+                    state.hasActivity = false;
+                    yield break;
+                }
+                break;
+            case InteractableObjects.Bar:
+                possibleTargets = new List<GameObject>(GameMaster.Instance.DrinkObjects);
                 break;
             case InteractableObjects.IdleActivity:
                 possibleTargets = new List<GameObject>(GameMaster.Instance.IdleObjects);
@@ -230,6 +241,9 @@ public class NPCBehaviors : MonoBehaviour
                 break;
             case InteractableObjects.Table:
                 StartCoroutine(Eat());
+                break;
+            case InteractableObjects.Bar:
+                StartCoroutine(Drink());
                 break;
             case InteractableObjects.QuestMarker:
                 if (q != null)
@@ -317,8 +331,25 @@ public class NPCBehaviors : MonoBehaviour
     {
         state.advActivity = "Eating";
         state.activityTime = 0.0f;
-        needs.SetNeedRates(3.0f, 0.4f, -0.2f, -0.2f);
+        needs.SetNeedRates(1.0f, 0.4f, -0.2f, -0.2f);
         while (needs.foodNeed < 100.0f)
+        {
+            yield return null;
+        }
+
+        needs.ResetRates();
+        state.ResetState();
+        state.hasActivity = false;
+        GetComponent<Adventurer>().CheckStateImmediate();
+        ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
+    }
+
+    IEnumerator Drink()
+    {
+        state.advActivity = "Gettin' Tipsy";
+        state.activityTime = 0.0f;
+        needs.SetNeedRates(0.25f, 1.0f, -0.7f, 0.3f);
+        while (needs.drinkNeed < 100.0f)
         {
             yield return null;
         }

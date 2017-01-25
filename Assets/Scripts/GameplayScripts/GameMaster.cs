@@ -15,6 +15,7 @@ public class GameMaster : MonoBehaviour {
     public List<GameObject> QuestObjects;
     public List<GameObject> IdleObjects;
     public List<GameObject> TableObjects;
+    public List<GameObject> DrinkObjects;
 
     //Generic Display Elements
     public Text npcNameDisplay;
@@ -49,6 +50,7 @@ public class GameMaster : MonoBehaviour {
         QuestObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("QuestGiver"));
         IdleObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("IdleActivity"));
         TableObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("TableItems"));
+        DrinkObjects = new List<GameObject>(GameObject.FindGameObjectsWithTag("DrinkItem"));
     }
 
     void Update()
