@@ -22,6 +22,8 @@ public class AdventurerStats : MonoBehaviour {
     public string advName;
     public List<string> statsList = new List<string>();
 
+    public int advHappiness;
+
     public void UpdateStatList()
     {
         statsList.Clear();
@@ -56,7 +58,9 @@ public class AdventurerStats : MonoBehaviour {
 
         levelUpExp = 100;
         //for (int i = 0; i < level; i++)
-            //levelUpExp *= 3;        
+        //levelUpExp *= 3;        
+
+        advHappiness = UnityEngine.Random.Range(50, 100);
     }
 
     public void AddEXP(int experience)
@@ -67,7 +71,11 @@ public class AdventurerStats : MonoBehaviour {
             levelUp();
             levelUpExp *= 3;
         }
+    }
 
+    public void ChangeHappiness(int change)
+    {
+        Mathf.Clamp(advHappiness += change, 0.0f, 100.0f);
     }
 
     void levelUp()
