@@ -9,8 +9,8 @@ public class AdventurerStats : MonoBehaviour {
     public enum Profession { Fighter, Pickpocket, Acolyte, Apprentice };
     public enum Race { Human, Elf, Dwarf, Halfling }
 
-    Profession profession;
-    Race race;
+    public Profession profession;
+    public Race race;
 
     public int level, HP, maxHP;
     public int strength, agility, toughness, smarts, minDamage, maxDamage, gold;

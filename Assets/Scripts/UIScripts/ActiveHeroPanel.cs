@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class ActiveHeroPanel : MonoBehaviour {
 
     public static ActiveHeroPanel Instance { get; private set; }
-
     Dictionary<Adventurer, GameObject> activeHeroes = new Dictionary<Adventurer, GameObject>();
     public GameObject activeHeroInfo;
 
@@ -56,5 +55,21 @@ public class ActiveHeroPanel : MonoBehaviour {
     public int NumberOfHeroesActive()
     {
         return activeHeroes.Count;
+    }
+
+    public Adventurer AdventurerInSlot(GameObject go)
+    {
+        //Values in activeHeroes are necessarily unique, we can return a key form the first value that matches
+        if (activeHeroes.ContainsValue(go))
+        {
+            foreach(KeyValuePair<Adventurer, GameObject> kvp in activeHeroes)
+            {
+                if (kvp.Value == go)
+                    return kvp.Key;
+
+            }
+        }
+
+        return null;
     }
 }
