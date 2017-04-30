@@ -12,6 +12,8 @@ public class HeroStatPanel : MonoBehaviour {
     Image heroSprite;
     [SerializeField]
     Image healthBar, happinessBar, questBar, foodbar, drinkBar, socialBar;
+    [SerializeField]
+    Text strDisplay, agiDisplay, tghDisplay, smrDisplay, atkDisplay, acDisplay, goldDisplay;
 
     AdventurerStats stats;
     AdventurerNeeds needs;
@@ -33,6 +35,16 @@ public class HeroStatPanel : MonoBehaviour {
             foodbar.rectTransform.localScale = new Vector3(needs.foodNeed / 100.0f, 1, 1);
             drinkBar.rectTransform.localScale = new Vector3(needs.drinkNeed / 100.0f, 1, 1);
             socialBar.rectTransform.localScale = new Vector3(needs.socialNeed / 100.0f, 1, 1);
+
+            strDisplay.text = "Strength: " + stats.strength;
+            agiDisplay.text = "Agility: " + stats.agility;
+            tghDisplay.text = "Toughness: " + stats.toughness;
+            smrDisplay.text = "Smarts: " + stats.smarts;
+
+            atkDisplay.text = "Attack: (" + stats.attackType + ") " + (stats.minDamage) + " - " + (stats.maxDamage);
+            acDisplay.text = "Armor: " + (10 + stats.toughness + stats.agility).ToString();
+
+            goldDisplay.text = "Gold: " + stats.gold;
         }
 
     }

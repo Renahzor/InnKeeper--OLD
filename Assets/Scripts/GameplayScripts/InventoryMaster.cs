@@ -9,6 +9,7 @@ public class InventoryMaster : MonoBehaviour {
     public Dictionary<int, int> inventoryTracker = new Dictionary<int, int>();//id, qty
     public List<Button> inventoryButtons = new List<Button>();
     public GameObject inventoryWindow;
+    public List<Sprite> inventorySprites;
 
     public Button inventoryItemPrefab;
 
@@ -32,6 +33,7 @@ public class InventoryMaster : MonoBehaviour {
             Button b = Instantiate(inventoryItemPrefab) as Button;
             b.transform.SetParent(inventoryWindow.transform, false);
             b.GetComponentInChildren<Text>().text = quantity.ToString();
+            b.GetComponentInChildren<Image>().sprite = inventorySprites[itemID];
             inventoryButtons.Add(b);
         }
     }

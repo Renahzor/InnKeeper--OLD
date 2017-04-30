@@ -76,7 +76,7 @@ public class BuildingMaster : MonoBehaviour {
                 if (Player.Instance.playerGold < item.GetComponent<BuildableObject>().buildCost)
                 {
                     Destroy(item);
-                    Debug.Log("Not enugh gold to build");
+                    Debug.Log("Not enough gold to build");
                     building = false;
                     yield break;
                 }
@@ -106,7 +106,6 @@ public class BuildingMaster : MonoBehaviour {
                 Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
                 item.transform.position = new Vector3(mousePos.x, mousePos.y, -1f);
-  
             }
             yield return null;
         }

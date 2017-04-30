@@ -14,7 +14,6 @@ public class OrderLedger : MonoBehaviour
 	void Start()
     {
         orders.Add(new Order());
-        ledgerPanel.SetActive(false);
 
         //create the table for displaying open orders
         foreach (Order o in orders)
@@ -32,16 +31,16 @@ public class OrderLedger : MonoBehaviour
         if (InventoryMaster.Instance.inventoryTracker.ContainsKey(o.itemIndex) &&  InventoryMaster.Instance.inventoryTracker[o.itemIndex] >= o.quantity)
         {
             InventoryMaster.Instance.inventoryTracker[o.itemIndex] -= o.quantity;
-            
 
             Player.Instance.playerGold += o.paymentValue;
             Player.Instance.UpdateGoldDisplay();
 
             InventoryMaster.Instance.UpdateInventoryQuantity(o.itemIndex);
+            GameMaster.Instance.SendGameMessage("+" + o.paymentValue + " gold");
         }
 
         else 
-            Debug.Log("Not Enough Items");
+            GameMaster.Instance.SendGameMessage("Not enough "+ o.orderItemName + " to fill order");
     }
 
     public void AddNewOrder(Order o)

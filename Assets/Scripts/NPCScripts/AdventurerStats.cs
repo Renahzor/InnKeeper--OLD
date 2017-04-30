@@ -7,10 +7,12 @@ using System.Collections;
 public class AdventurerStats : MonoBehaviour {
 
     public enum Profession { Fighter, Pickpocket, Acolyte, Apprentice };
-    public enum Race { Human, Elf, Dwarf, Halfling }
+    public enum Race { Human, Elf, Dwarf, Halfling, Gnome }
+    public enum AttackType { Unarmed, Melee, Stealth, Arcane }
 
     public Profession profession;
     public Race race;
+    public AttackType attackType;
 
     public int level, HP, maxHP;
     public int strength, agility, toughness, smarts, minDamage, maxDamage, gold;
@@ -54,13 +56,32 @@ public class AdventurerStats : MonoBehaviour {
         exp = 0;
         gold = 2;
         advName = name;
-        UpdateStatList();
 
-        levelUpExp = 100;
-        //for (int i = 0; i < level; i++)
-        //levelUpExp *= 3;        
+        levelUpExp = 100;      
 
         advHappiness = UnityEngine.Random.Range(50, 100);
+
+        switch (profession)
+        {
+            case Profession.Fighter:
+            attackType = AttackType.Melee;
+                break;
+            case Profession.Acolyte:
+                attackType = AttackType.Unarmed;
+                break;
+            case Profession.Pickpocket:
+                attackType = AttackType.Stealth;
+                break;
+            case Profession.Apprentice:
+                attackType = AttackType.Arcane;
+                break;
+            default:
+                    break;
+        }
+
+        levelUp();
+        HP = maxHP;
+        UpdateStatList();
     }
 
     public void AddEXP(int experience)
@@ -84,43 +105,51 @@ public class AdventurerStats : MonoBehaviour {
         {
             case Profession.Fighter:
                 level++;
-                strength++;
+                strength += UnityEngine.Random.Range(1, 3);
                 toughness++;
                 if (UnityEngine.Random.Range(0, 100) > 50)
                     smarts++;
                 else
                     agility++;
                 maxHP += toughness;
+                minDamage = 1 + strength;
+                maxDamage = 5 + strength;
                 break;
             case Profession.Acolyte:
                 level++;
+                toughness += UnityEngine.Random.Range(1, 3);
                 smarts++;
-                strength++;
                 if (UnityEngine.Random.Range(0, 100) > 50)
-                    toughness++;
+                    strength++;
                 else
                     agility++;
                 maxHP += toughness;
+                minDamage = 1 + toughness;
+                maxDamage = 5 + toughness;
                 break;
             case Profession.Apprentice:
                 level++;
-                smarts++;
+                smarts += UnityEngine.Random.Range(1, 3);
                 agility++;
                 if (UnityEngine.Random.Range(0, 100) > 50)
                     strength++;
                 else
                     toughness++;
                 maxHP += toughness;
+                minDamage = 1 + smarts;
+                maxDamage = 5 + smarts;
                 break;
             case Profession.Pickpocket:
                 level++;
-                agility++;
+                agility += UnityEngine.Random.Range(1, 3);
                 strength++;
                 if (UnityEngine.Random.Range(0, 100) > 50)
                     smarts++;
                 else
                     toughness++;
                 maxHP += toughness;
+                minDamage = 1 + agility;
+                maxDamage = 5 + agility;
                 break;
             default:
                 break;

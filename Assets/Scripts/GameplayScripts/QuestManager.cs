@@ -26,13 +26,15 @@ public class QuestManager : MonoBehaviour {
     public List<Enemy> GenerateEnemyList(Quest q)
     {
         List<Enemy> tmp = new List<Enemy>();
-        int numberOfEnemies = Random.Range(2, 6);
+        int numberOfEnemies = Random.Range(2, (5 + (q.locationIndex + 1) / (q.objectiveIndex + 1) ));
         for (int i = 0; i < numberOfEnemies; i++)
         {
-            string enemyName = "Ogre ";
+            string enemyName = "Goblin ";
             if (q.objectiveIndex == 0)
                 enemyName = "Rat ";
-            tmp.Add(new Enemy(enemyName + i, (q.objectiveIndex + 1 * Random.Range(2, 5)), q.locationIndex + 1));
+            if (q.objectiveIndex == 2)
+                enemyName = "Spider ";
+            tmp.Add(new Enemy(enemyName + (i + 1), (q.objectiveIndex + 1 * Random.Range(2, 6)), q.locationIndex + 1, GameMaster.Instance.enemySpriteList[q.objectiveIndex]));
         }
 
         return tmp;
@@ -45,11 +47,18 @@ public class QuestManager : MonoBehaviour {
         switch (currentLevel)
         {
             case 2:
-                questLocationsList.Add("Old Mill");
+                questLocationsList.Add("The Old Mill");
                 break;
             case 3:
-                questObjectivesList.Add("Ogre Knuckles");
-                GameObject.Find("GameMaster").GetComponent<OrderLedger>().AddNewOrder(new Order("Ogre Knuckles Wanted", "Bring us some Ogre Knuckles", 8, 23, 1));
+                questObjectivesList.Add("Goblin Ears");
+                GameObject.Find("GameMaster").GetComponent<OrderLedger>().AddNewOrder(new Order("Goblin Ears", "The local magistrate is paying well for goblin ears.", 8, 23, 1));
+                break;
+            case 4:
+                questLocationsList.Add("The Maple Thicket");
+                break;
+            case 5:
+                questObjectivesList.Add("Spider Venom");
+                GameObject.Find("GameMaster").GetComponent<OrderLedger>().AddNewOrder(new Order("Spider Venom", "A 'weaponsmith' in town needs spider venom for his craft", 10, 55, 2));
                 break;
             default:
                 break;

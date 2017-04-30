@@ -1,12 +1,20 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestItemScript : MonoBehaviour {
     [SerializeField]
     int numberOfQuests;
     [SerializeField]
     List<Quest> questsStored = new List<Quest>();
+    [SerializeField]
+    Text questCountText;
+
+    void Awake()
+    {
+        questCountText = GetComponentInChildren<Text>();
+    }
 
     public bool HasRoomForQuest()
     {
@@ -23,13 +31,15 @@ public class QuestItemScript : MonoBehaviour {
         if (questsStored.Count < numberOfQuests)
             questsStored.Add(q);
 
-        else Debug.Log("Cannot Hold More Quests");
+        else GameMaster.Instance.SendGameMessage("Quest Board is full, build a new one");
+        questCountText.text = questsStored.Count + "/" + numberOfQuests;
     }
 
     public void RemoveQuest(Quest q)
     {
         if (questsStored.Contains(q))
             questsStored.Remove(q);
+        questCountText.text = questsStored.Count + "/" + numberOfQuests;
     }
     
 }

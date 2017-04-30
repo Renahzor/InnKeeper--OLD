@@ -16,7 +16,7 @@ public class Adventurer : MonoBehaviour {
     //creates a new random adventurer
     void Awake()
     {
-        NewAdventurer(1);
+        NewAdventurer(0);
     }
 
     void NewAdventurer(int _level)

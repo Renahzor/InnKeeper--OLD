@@ -25,7 +25,9 @@ public class ActiveQuestManager : MonoBehaviour {
     {
         foreach (Quest temp in activeQuests.Keys)
             if (temp.locationIndex == q.locationIndex && temp.objectiveIndex == q.objectiveIndex && temp.goldReward == q.goldReward)
+            {
                 return true;
+            }
 
         return false;
     }

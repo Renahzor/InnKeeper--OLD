@@ -56,13 +56,13 @@ public class QuestWindowController : MonoBehaviour
         
         if (!questHolder.HasRoomForQuest())
         {
-            Debug.Log("Quest Board is full");
+            GameMaster.Instance.SendGameMessage("Quest Board is full");
             return;
         }
 
         if (questObjectiveDropdown.value == -1 || questLocationDropdown.value == -1)
         {
-            Debug.Log("SELECT OPTIONS");
+            GameMaster.Instance.SendGameMessage("Fill in all options");
             return;
         }
 
@@ -85,7 +85,7 @@ public class QuestWindowController : MonoBehaviour
 
         else
         {
-            Debug.Log("Duplicate quest exists");
+            GameMaster.Instance.SendGameMessage("Identical quest already exists");
             return;
         }
     }

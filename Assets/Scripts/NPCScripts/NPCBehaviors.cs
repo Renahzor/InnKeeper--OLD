@@ -11,6 +11,8 @@ public class NPCBehaviors : MonoBehaviour
 
     //Store health bar so we dont have to "find" it multiple times
     public Image healthBar = null;
+    public GameObject quickUIHero;
+    public GameObject quickUIEnemy;
 
     StateTracker state;
     AdventurerNeeds needs;
@@ -51,14 +53,20 @@ public class NPCBehaviors : MonoBehaviour
     //routine to leave the Inn, travel to and run quests
     IEnumerator RunQuest(Quest q)
     {
+        var myQuickUI = Instantiate(quickUIHero);
+        myQuickUI.transform.SetParent(GameObject.Find("quicktrackui").transform, false);
+        myQuickUI.GetComponentInChildren<Text>().text = stats.advName;
+
         state.hasActivity = true;
 
         List<Enemy> enemies = GameObject.Find("GameMaster").GetComponent<QuestManager>().GenerateEnemyList(q);
         Enemy myTarget = null;
+        int enemyIndex = -1;
+
         int enemiesDefeated = 0;
 
         //travel to the location
-        state.advActivity = "Traveling...";
+        state.advActivity = "Traveling to " + GameObject.Find("GameMaster").GetComponent<QuestManager>().questLocationsList[q.locationIndex];
         float travelTime = (q.locationIndex + 1) * 12.0f;
 
         GameObject temp = GameObject.Find("ExitPath");
@@ -80,57 +88,115 @@ public class NPCBehaviors : MonoBehaviour
             yield return null;
         }
 
+        List<GameObject> enemyUIList = new List<GameObject>();
+        foreach (Enemy e in enemies)
+        {
+            var enemyQuickImage = Instantiate(quickUIEnemy);
+            enemyQuickImage.transform.SetParent(myQuickUI.transform, false);
+            enemyUIList.Add(enemyQuickImage);
+            enemyQuickImage.GetComponent<Image>().sprite = e.mySprite;
+        }
+
         needs.SetNeedRates(-1.0f, -0.15f, 2.0f, -0.25f);
 
         state.advActivity = "Fighting!";
         state.activityTime = 0.0f;
 
-        //fight the monsters whilw there are monsters to fight
+        //fight the monsters while there are monsters to fight
         while (enemies.Count > 0)
         {
             state.activityTime += Time.deltaTime;
             int tmpHP = stats.HP;
 
             foreach (Enemy e in enemies)
-                stats.HP -= e.Attack(10 + stats.agility + stats.toughness);
+            {
+                int HPReduction = e.Attack(10 + stats.agility + stats.toughness, false);
+                stats.HP -= HPReduction;
+                if (HPReduction > 0)
+                {
+                    if (e.critLastHit)
+                        GameMaster.Instance.GetComponent<AttackHandler>().RecieveAttack(-HPReduction, myQuickUI.transform, true, false);
+                    else
+                        GameMaster.Instance.GetComponent<AttackHandler>().RecieveAttack(-HPReduction, myQuickUI.transform, false, false);
+                }
+
+            }
 
             if (tmpHP != stats.HP)
                 ChangeHeroHealthDisplay();
 
             if (myTarget == null && enemies.Count > 0)
             {
-                myTarget = enemies[Random.Range(0, enemies.Count)];
+                enemyIndex = Random.Range(0, enemies.Count);
+                myTarget = enemies[enemyIndex];
+                state.advActivity = "Fighting " + myTarget.name + "...";
             }
 
             state.attackTimer -= Time.deltaTime;
-            if (Attack(myTarget))
+            if (Attack(myTarget, enemyUIList[enemyIndex].transform))
             {
-                Debug.Log("Target Killed: " + myTarget.name);
+                state.advActivity = "Target Killed: " + myTarget.name;
                 stats.AddEXP(myTarget.level * 25);
                 enemies.Remove(myTarget);
                 myTarget = null;
                 enemiesDefeated++;
+                Destroy(enemyUIList[enemyIndex], 1.1f);
+                enemyUIList.Remove(enemyUIList[enemyIndex]);
             }
 
             ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
 
-            if (enemies.Count == 0 || stats.HP <= 0)
+            //This section is for ending a quest, either by completion or by fleeing
+            if (enemies.Count == 0)
             {
-                CompleteQuest(q, enemiesDefeated);
+                travelTime = (q.locationIndex + 1) * 12.0f;
+                state.advActivity = "Returning...";
+                while (travelTime >= 0.0f)
+                {
+                    travelTime -= Time.deltaTime;
+                    state.activityTime = travelTime;
+                    ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
+                    yield return null;
+                }
+                CompleteQuest(q, enemiesDefeated, enemies);
+                Destroy(myQuickUI, 3.0f);
             }
 
             else if (stats.HP < stats.maxHP * .3)
             {
-                Flee(q, enemiesDefeated, enemies);
+                var tempEnemies = new List<Enemy>(enemies);
+                enemies.Clear();
+                Flee(q, enemiesDefeated, tempEnemies, myQuickUI);
+
+                if (stats.HP <= 0)
+                {
+                    CompleteQuest(q, enemiesDefeated, tempEnemies);
+                    Destroy(myQuickUI, 3.0f);
+                }
+
+                else
+                {
+                    travelTime = (q.locationIndex + 1) * 12.0f;
+                    state.advActivity = "Fleeing...";
+                    while (travelTime >= 0.0f)
+                    {
+                        travelTime -= Time.deltaTime;
+                        state.activityTime = travelTime;
+                        ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
+                        yield return null;
+                    }
+                    CompleteQuest(q, enemiesDefeated, tempEnemies);
+                }
             }
             yield return null;
         }
+        Destroy(myQuickUI, 3.0f);
         needs.ResetRates();
         state.ResetState();
     }
 
     //Helper method for attacking an enemy, math for damage and hit chance may change at a later time
-    public bool Attack(Enemy target)
+    public bool Attack(Enemy target, Transform enemyQuickUITransform)
     {
         if (state.attackTimer > 0.0f)
         {
@@ -138,26 +204,53 @@ public class NPCBehaviors : MonoBehaviour
         }
 
         state.attackTimer = 2.0f;
-        if (UnityEngine.Random.Range(1, 20) + stats.agility >= target.armor)
+
+        int attackRoll = UnityEngine.Random.Range(1, 21) + stats.agility;
+
+        if (attackRoll >= target.armor)
         {
-            if (target.ReduceHP(UnityEngine.Random.Range(stats.minDamage + stats.strength, stats.maxDamage + stats.strength)))
+            //Set attack damage multiplier if the enemy is weak to this type
+            float attackMultiplier = 1.0f;
+            if (target.weaknessType == stats.attackType)
+                attackMultiplier = 1.5f;
+
+            int damage = UnityEngine.Random.Range((int)(stats.minDamage * attackMultiplier), (int)(stats.maxDamage * attackMultiplier));
+
+            bool critical = false;
+            if (attackRoll - stats.agility == 20)
+            {
+                damage *= 2;
+                critical = true;
+            }
+
+            GameMaster.Instance.GetComponent<AttackHandler>().RecieveAttack(-damage, enemyQuickUITransform.transform, critical, false);
+
+            if (target.ReduceHP(damage))
+            {
                 return true;
+            }
         }
 
         return false;
     }
 
     //when a hero decides to flee, all enemies get one extra attack
-    void Flee(Quest q, int numberDefeated, List<Enemy> remainingEnemies)
+    void Flee(Quest q, int numberDefeated, List<Enemy> remainingEnemies, GameObject uiParent)
     {
         //each enemy gets a final attack as the hero flees
         foreach (Enemy e in remainingEnemies)
         {
-            stats.HP -= e.Attack(10 + stats.agility + stats.toughness);
+            int HPReduction = e.Attack(10 + stats.agility + stats.toughness, true);
+            stats.HP -= HPReduction;
+            if (HPReduction > 0)
+            {
+                if (e.critLastHit)
+                    GameMaster.Instance.GetComponent<AttackHandler>().RecieveAttack(-HPReduction, uiParent.transform, true, false);
+                else
+                    GameMaster.Instance.GetComponent<AttackHandler>().RecieveAttack(-HPReduction, uiParent.transform, false, false);
+            }
         }
-        remainingEnemies.Clear();
-
-        CompleteQuest(q, numberDefeated);
+        GameMaster.Instance.questsCompleted--;
     }
 
     //moveto routine for different objects within the inn
@@ -361,10 +454,16 @@ public class NPCBehaviors : MonoBehaviour
         ActiveHeroPanel.Instance.UpdateHeroStats(this.GetComponent<Adventurer>());
     }
 
-    void CompleteQuest(Quest q, int numberDefeated)
+    void CompleteQuest(Quest q, int numberDefeated, List<Enemy>enemiesRemaining)
     {
         if (stats.HP <= 0)
         {
+            string enemyKilledBy;
+            if (enemiesRemaining.Count > 0)
+                enemyKilledBy = enemiesRemaining[Random.Range(0, enemiesRemaining.Count)].name;
+            else
+                enemyKilledBy = "hubris";
+            GameMaster.Instance.SendGameMessage("Hero " + stats.advName + " has been killed by " + enemyKilledBy);
             KillNPC();
         }
 
