@@ -35,6 +35,7 @@ public class HeroStatPanel : MonoBehaviour {
             foodbar.rectTransform.localScale = new Vector3(needs.foodNeed / 100.0f, 1, 1);
             drinkBar.rectTransform.localScale = new Vector3(needs.drinkNeed / 100.0f, 1, 1);
             socialBar.rectTransform.localScale = new Vector3(needs.socialNeed / 100.0f, 1, 1);
+            happinessBar.rectTransform.localScale = new Vector3(stats.advHappiness / 100.0f, 1, 1);
 
             strDisplay.text = "Strength: " + stats.strength;
             agiDisplay.text = "Agility: " + stats.agility;

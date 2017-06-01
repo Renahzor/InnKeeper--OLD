@@ -19,6 +19,8 @@ public class ActiveQuestManager : MonoBehaviour {
                   q.goldReward.ToString() + " ";
 
         activeQuests.Add(q, t);
+
+        t.GetComponent<QuestUIElement>().SetQuest(q);
     }
 
     public bool IsDuplicateQuest(Quest q)
@@ -30,5 +32,16 @@ public class ActiveQuestManager : MonoBehaviour {
             }
 
         return false;
+    }
+
+    public void RemoveTrackedQuest(Quest q)
+    {
+        if (activeQuests.ContainsKey(q))
+        {
+            activeQuests.Remove(q);
+        }
+
+        else
+            Debug.Log("Quest does not exist. This should never happen");
     }
 }
