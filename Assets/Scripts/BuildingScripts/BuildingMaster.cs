@@ -10,6 +10,7 @@ public class BuildingMaster : MonoBehaviour {
     public GameObject restItemParent;
     public GameObject questItemParent;
     public GameObject wallItemParent;
+    public GameObject idleItemParent;
 
     public GameObject buttonPrefab;
 
@@ -20,6 +21,7 @@ public class BuildingMaster : MonoBehaviour {
         int i = 0;
         foreach (GameObject item in itemPrefabs)
         {
+            //TODO Refactor this to avoid repetitive actions
             if (item.GetComponent<BedScript>() != null)
             {
                 bool panelState = restItemParent.activeSelf;
@@ -38,6 +40,17 @@ public class BuildingMaster : MonoBehaviour {
 
                 var button = Instantiate(buttonPrefab);
                 button.transform.SetParent(questItemParent.transform, false);
+                button.GetComponent<BuildMenuButton>().SetupButton(i);
+                questItemParent.SetActive(panelState);
+            }
+
+            else if (item.GetComponent<IdleActivityScript>() != null)
+            {
+                bool panelState = questItemParent.activeSelf;
+                questItemParent.SetActive(true);
+
+                var button = Instantiate(buttonPrefab);
+                button.transform.SetParent(idleItemParent.transform, false);
                 button.GetComponent<BuildMenuButton>().SetupButton(i);
                 questItemParent.SetActive(panelState);
             }

@@ -8,4 +8,11 @@ public class IdleActivityScript : MonoBehaviour {
     public string activityName;
     public int activityCost;
 
+    [SerializeField]
+    List<string> activityMessages = new List<string>();
+
+    public string getActivityMessage()
+    {
+        return activityMessages[Random.Range(0, activityMessages.Count)];
+    }
 }

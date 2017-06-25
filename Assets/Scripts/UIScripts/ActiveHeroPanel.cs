@@ -23,7 +23,7 @@ public class ActiveHeroPanel : MonoBehaviour {
             temp.transform.SetParent(this.transform, false);
             activeHeroes.Add(a, temp);
             UpdateHeroStats(a);
-            a.GetComponent<NPCBehaviors>().healthBar = temp.transform.FindChild("HealthBar").GetComponent<Image>();
+            a.GetComponent<NPCBehaviors>().healthBar = temp.transform.Find("HealthBar").GetComponent<Image>();
         }    
     }
 
