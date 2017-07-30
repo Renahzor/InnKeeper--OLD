@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class UIWindowController : MonoBehaviour {
 
     [SerializeField]
-    GameObject questWindow, inventoryWindow, activeAdventurerWindow, ledgerWindow, activeQuestWindow;
+    GameObject questWindow, inventoryWindow, activeAdventurerWindow, ledgerWindow, activeQuestWindow, cemetaryWindow;
 
     // Use this for initialization
     void Start () {

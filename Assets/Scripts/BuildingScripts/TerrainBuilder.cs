@@ -36,4 +36,19 @@ public class TerrainBuilder : MonoBehaviour {
                 tileMap[x, y] = tile;
             }
     }	
+
+    public void WallPlacement()
+    {
+        for (int x = 0; x <= xTiles * 2; x++)
+            for (int y = 0; y <= yTiles * 2; y++)
+            {
+                int index = Random.Range(0, baseSprites.Count);
+                var tile = Instantiate(terrainTilePrefab);
+                tile.GetComponent<SpriteRenderer>().sprite = baseSprites[index];
+                tile.transform.localPosition = new Vector3((x - xTiles) * tilesize / 100.0f, (y - yTiles) * tilesize / 100.0f, 0);
+                tile.transform.SetParent(terrainParent.transform, true);
+                tile.GetComponent<TerrainTileScript>().SetCoords(x, y, index);
+                tileMap[x, y] = tile;
+            }
+    }
 }

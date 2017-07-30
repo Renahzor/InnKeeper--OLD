@@ -46,14 +46,26 @@ public class BuildingMaster : MonoBehaviour {
 
             else if (item.GetComponent<IdleActivityScript>() != null)
             {
-                bool panelState = questItemParent.activeSelf;
-                questItemParent.SetActive(true);
+                bool panelState = idleItemParent.activeSelf;
+                idleItemParent.SetActive(true);
 
                 var button = Instantiate(buttonPrefab);
                 button.transform.SetParent(idleItemParent.transform, false);
                 button.GetComponent<BuildMenuButton>().SetupButton(i);
-                questItemParent.SetActive(panelState);
+                idleItemParent.SetActive(panelState);
             }
+
+            else if (item.GetComponent<FloorTileScript>() != null)
+            {
+                bool panelState = wallItemParent.activeSelf;
+                wallItemParent.SetActive(true);
+
+                var button = Instantiate(buttonPrefab);
+                button.transform.SetParent(wallItemParent.transform, false);
+                button.GetComponent<BuildMenuButton>().SetupButton(i);
+                wallItemParent.SetActive(panelState);
+            }
+
             i++;
         }
 	}
@@ -82,6 +94,12 @@ public class BuildingMaster : MonoBehaviour {
         while (Input.GetMouseButton(0))
             yield return null;
 
+        if (item.GetComponent<FloorTileScript>() != null)
+        {
+            GameObject.Find("WallBuilder").GetComponent<FloorBuilderScript>().SetupBuilder(item);
+            yield break;
+        }
+
         while (building)
         {
             if (Input.GetMouseButtonDown(0))
@@ -89,13 +107,14 @@ public class BuildingMaster : MonoBehaviour {
                 if (Player.Instance.playerGold < item.GetComponent<BuildableObject>().buildCost)
                 {
                     Destroy(item);
-                    Debug.Log("Not enough gold to build");
+                    GameMaster.Instance.SendGameMessage("Not Enough gold to build.\nRequires " + item.GetComponent<BuildableObject>().buildCost + " Gold");
                     building = false;
                     yield break;
                 }
 
                 else
                 {
+                    GameMaster.Instance.SendGameMessage("Built Object for " + item.GetComponent<BuildableObject>().buildCost + " Gold");
                     Player.Instance.playerGold -= item.GetComponent<BuildableObject>().buildCost;
                     Player.Instance.UpdateGoldDisplay();
 

@@ -464,6 +464,7 @@ public class NPCBehaviors : MonoBehaviour
             else
                 enemyKilledBy = "hubris";
             GameMaster.Instance.SendGameMessage("Hero " + stats.advName + " has been killed by " + enemyKilledBy);
+            GameObject.Find("Mausoleum").GetComponent<DeathDisplay>().RecordDeath(stats.advName, enemyKilledBy);
             KillNPC();
         }
 
